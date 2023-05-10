@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "@emotion/styled";
-import Chat from "../src/domain/chat/Chat";
+import Chat from "../domain/chat/Chat";
 
 
 export const Root = styled.section`
@@ -18,9 +18,9 @@ export const Wrapper = styled.div`
 const ChatPage = () => {
     return (
         <Root>
-            <Wrppaer>
+            <Wrapper>
                 <Chat/>
-            </Wrppaer>
+            </Wrapper>
         </Root>
     );
 };

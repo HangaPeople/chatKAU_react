@@ -1,50 +1,78 @@
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {
-    BodyAside,
     BodyContainer,
-    BodyWrapper, BubbleBox, BubbleRow, ChatContainer, ChatInput, ChatInputContainer, ChatInputWrapper, ChatWrapper,
-    HeaderContainer,
-    HeaderWrapper,
-    NameContainer,
-    NameWrapper,
+    BodyWrapper,
+    BubbleBox,
+    BubbleRow,
+    ChatContainer,
+    ChatInput,
+    ChatInputContainer,
+    ChatInputWrapper,
+    ChatWrapper, HeaderContainer, HeaderWrapper,
+    NameContainer, NameWrapper,
     Root,
     Wrapper
 } from "./Chat.styles";
 import {Box, Button, Icon} from "@mui/material";
 
+
+
+const getGPTResponse = async (questionText:string) => {
+
+    const result = await fetch('https://localhost:8080/chat-gpt/question', {
+        method: 'POST', // HTTP 요청 메서드 설정
+        headers: {
+            'Content-Type': 'application/json' // 요청 바디의 데이터 타입 설정
+        },
+        body:JSON.stringify({
+            question:questionText
+        }),
+    }).then(res => res.json())
+
+    return result;
+}
+
 const Chat = () => {
+    const [content, setContent] = useState<string[]>([]);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+
+    const handleSendMessage = async () => {
+        let currentInput:string = inputRef.current ? inputRef.current.value as string : ''
+        setContent(prev => [...prev, currentInput]);
+        const response = await getGPTResponse(currentInput)
+        setContent(prev => [...prev, response.data.choices.text as string])
+        currentInput = '';
+    }
+
     return (
         <Root>
             <Wrapper>
+                <HeaderContainer>
+                    <HeaderWrapper>
+                        <NameContainer>
+                            <NameWrapper>
+                                kau-GPT
+                            </NameWrapper>
+                        </NameContainer>
+                    </HeaderWrapper>
+                </HeaderContainer>
                 <BodyContainer>
                     <BodyWrapper>
                         <ChatContainer>
                             <ChatWrapper>
                                 <BubbleBox>
-                                    {query.status === 'error' ? (
-                                        <div>메세지 페칭 에러 발생</div>
-                                    ) : query.status === 'loading' ? (
-                                        <div>로딩중..</div>
-                                    ) : (
-                                        query.data.pages.map(page => {
-                                            return page.result.map(data => {
-                                                return (
-                                                    <BubbleRow key={data.chatId} loginId={data.loginId}>
-                                                        <div className='BubbleContainer'>
-                                                            <div className='BubbleWrapper'>{data.content}</div>
-                                                        </div>
-                                                    </BubbleRow>
-                                                )
-                                            })
-                                        })
-                                    )}
-                                    <div ref={targetElement}>
-                                        {query.isFetchingNextPage && query.hasNextPage ? 'Loading...' : 'No search left'}
-                                    </div>
+                                    {content?.map(text => {
+                                        return <BubbleRow key={text} >
+                                            <div className='BubbleContainer'>
+                                                <div className='BubbleWrapper'>{text}</div>
+                                            </div>
+                                        </BubbleRow>
+                                    })}
                                 </BubbleBox>
                                 <ChatInputContainer>
                                     <ChatInputWrapper>
-                                        <ChatInput multiline maxRows={5} onChange={e => setContent(e.target.value)}></ChatInput>
+                                        <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
                                         <Button onClick={handleSendMessage}>
                                             전송
                                         </Button>
