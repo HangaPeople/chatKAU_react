@@ -1,9 +1,9 @@
 import {TextField} from '@mui/material'
 import styled from '@emotion/styled'
 export const Root = styled.div`
-  margin-top: 64px;
-  max-width: 400px;
-  max-height: 500px;
+  //margin-top: 64px;
+  //max-width: 400px;
+  //max-height: 500px;
   width: 100%;
   height: 100%;
 `
@@ -29,6 +29,7 @@ export const HeaderWrapper = styled.div`
   border-bottom: 0.5px solid #cccccc;
   box-sizing:border-box;
   padding:12px;
+  width:100%;
 `
 
 export const NameContainer = styled.div`
@@ -42,11 +43,17 @@ export const NameWrapper = styled.div`
   align-items: center;
   font-size: 26px;
   line-height: 30px;
+  
+  & img{
+    width:75px;
+    height:75px;
+  }
 `
 
 export const BodyContainer = styled.div`
   width: 100%;
-  height:30rem;
+  box-sizing: border-box;
+  height:39rem;
 `
 export const BodyWrapper = styled.div`
   width: 100%;
@@ -88,13 +95,22 @@ export const BubbleBox = styled.div`
   overflow: auto;
 `
 
-export const BubbleRow = styled.div`
+export const BubbleRow = styled.div<{type:'user'|'gpt'}>`
   display: flex;
   align-items: center;
   width: 95%;
   height: auto;
   padding: 10px 5px 10px 5px;
-  background-color: transparent;
+
+  justify-content: ${({type}) => {
+    if (type === 'gpt') {
+      return 'flex-start'
+    }
+    return 'flex-end'
+  }};
+
+  
+
 
   .BubbleContainer {
     width: auto;
@@ -111,11 +127,18 @@ export const BubbleRow = styled.div`
       font-size: 16px;
       line-height: 24px;
       box-shadow: 0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06);
-
+      color:#fff;
+      border-radius: 12px;
+      background-color: ${({type}) => {
+        if (type === 'gpt') {
+          return '#234346'
+        }
+        return '#0A1660'
+      }};
     }
   }
 
-  
+
 `
 
 export const ChatInputContainer = styled.div`
