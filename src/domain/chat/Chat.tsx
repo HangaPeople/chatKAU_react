@@ -18,8 +18,7 @@ import {Box, Button, Icon} from "@mui/material";
 import logo from './emblem.png'
 
 
-
-const getGPTResponse = async (questionText:string) => {
+const getGPTResponse = async (messages:any[]) => {
 
     const result = await fetch('http://localhost:8080/chat-gpt/question', {
         method: 'POST', // HTTP 요청 메서드 설정
@@ -27,7 +26,7 @@ const getGPTResponse = async (questionText:string) => {
             'Content-Type': 'application/json' // 요청 바디의 데이터 타입 설정
         },
         body:JSON.stringify({
-            question:questionText
+            messages
         }),
     }).then(res => res.json())
 
@@ -47,8 +46,8 @@ const Chat = () => {
     const handleSendMessage = async () => {
         let currentInput:string = inputRef.current ? inputRef.current.value as string : ''
         setContent(prev => [...prev, {type:'user', text:currentInput}]);
-        const response = await getGPTResponse(currentInput)
-        setContent(prev => [...prev,{type:'gpt',text:response.choices[0].text as string} ])
+        const response = await getGPTResponse([{role:'system', content:currentInput}])
+        setContent(prev => [...prev,{type:'gpt',text:response.choices[0].message.content as string} ])
         currentInput = '';
     }
 
