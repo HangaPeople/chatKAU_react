@@ -1,4 +1,4 @@
-import {TextField} from '@mui/material'
+import {FormControl, TextField} from '@mui/material'
 import styled from '@emotion/styled'
 export const Root = styled.div`
   //margin-top: 64px;
@@ -28,11 +28,12 @@ export const HeaderWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-bottom: 0.5px solid #cccccc;
-  box-sizing:border-box;
-  padding:12px;
-  width:100%;
-  background: #fff;
+  box-sizing: border-box;
+  padding: 12px;
+  width: 100%;
+  background: rgba(255, 255, 255, 1);
+  backdrop-filter: blur(15px);
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 `
 
 export const NameContainer = styled.div`
@@ -165,6 +166,7 @@ export const ChatInputWrapper = styled.form`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `
 
 export const ChatInput = styled(TextField)`
@@ -176,5 +178,30 @@ export const ChatInput = styled(TextField)`
     font-size: 16px;
     line-height: 24px;
     border:none;
+  }
+`
+
+export const FloatFormControl = styled(FormControl)`
+  z-index: 999;
+  position: absolute;
+  top:25%;
+  right: 0%;
+  background: #fff;
+  border-radius: 10px;
+  //box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  padding:0.3rem;
+  box-sizing: border-box;
+  
+  .MuiFormLabel-root{
+    font-size: 1px;
+  }
+  .MuiFormGroup-root{
+    height:auto;
+  }
+  .css-ahj2mt-MuiTypography-root{
+    font-size: 15px;
+    font-weight: 600;
+    text-align: end;
+    width:100%;
   }
 `

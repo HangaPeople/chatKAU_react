@@ -1,4 +1,4 @@
-import React, {KeyboardEventHandler, useEffect, useRef, useState} from 'react';
+import React, {ChangeEventHandler, KeyboardEventHandler, useEffect, useRef, useState} from 'react';
 import {
     BodyContainer,
     BodyWrapper,
@@ -8,12 +8,12 @@ import {
     ChatInput,
     ChatInputContainer,
     ChatInputWrapper,
-    ChatWrapper, HeaderContainer, HeaderWrapper,
+    ChatWrapper, FloatFormControl, HeaderContainer, HeaderWrapper,
     NameContainer, NameWrapper,
     Root,
     Wrapper
 } from "./Chat.styles";
-import {Box, Button, Icon} from "@mui/material";
+import {Box, Button, FormControl, FormControlLabel, FormLabel, Icon, Radio, RadioGroup} from "@mui/material";
 
 import logo from './emblem.png'
 
@@ -49,13 +49,19 @@ const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
     const [isEntered, setIsEntered] = useState(false);
+    const [responseType, setResponseType] = useState('simple');
+
+    const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+        setResponseType(event.target.value);
+    };
+
 
 
     const handleSendMessage = async () => {
         if(inputRef.current){
             const currentInput = inputRef.current.value ?? ''
             setContent(prev => [...prev, {type:'user', text:currentInput}]);
-            const response = await getGPTResponse([{role:'system', content:currentInput}])
+            const response = await getGPTResponse([{role:'system', content:currentInput, type:responseType}])
             const parsed:string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>')
             setContent(prev => [...prev,{type:'gpt',text:parsed as string} ])
             inputRef.current.value = ''
@@ -80,10 +86,23 @@ const Chat = () => {
 
 
 
+    // @ts-ignore
+
     return (
         <Root>
             <Wrapper>
                 <HeaderContainer>
+                    <FloatFormControl>
+                        <RadioGroup
+                            row
+                            aria-labelledby="demo-row-radio-buttons-group-label"
+                            name="row-radio-buttons-group"
+                            defaultValue="simple"
+                        >
+                                <FormControlLabel value="detail" control={<Radio size={'small'} onChange={handleChangeRadio} />} label="자세히" />
+                                <FormControlLabel value="simple" control={<Radio size={'small'} onChange={handleChangeRadio}  />} label="간단히" />
+                        </RadioGroup>
+                    </FloatFormControl>
                     <HeaderWrapper>
                         <NameContainer>
                             <NameWrapper>
@@ -109,14 +128,18 @@ const Chat = () => {
 
                             </ChatWrapper>
                             <ChatInputContainer>
+
                                 <ChatInputWrapper onKeyDown={handleEnterText}>
                                     <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
                                     <Button onClick={handleSendMessage}>
                                         전송
                                     </Button>
                                 </ChatInputWrapper>
+
                             </ChatInputContainer>
+
                         </ChatContainer>
+
                     </BodyWrapper>
                 </BodyContainer>
             </Wrapper>
