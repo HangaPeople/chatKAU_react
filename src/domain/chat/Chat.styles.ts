@@ -12,14 +12,16 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  
   border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  //box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
 `
 
 export const HeaderContainer = styled.div`
   width: 100%;
-  height: 64px;
+  height: 100px;
+  position: fixed;
+  top:0;
+  left: 0;
 `
 
 export const HeaderWrapper = styled.div`
@@ -30,6 +32,7 @@ export const HeaderWrapper = styled.div`
   box-sizing:border-box;
   padding:12px;
   width:100%;
+  background: #fff;
 `
 
 export const NameContainer = styled.div`
@@ -53,7 +56,8 @@ export const NameWrapper = styled.div`
 export const BodyContainer = styled.div`
   width: 100%;
   box-sizing: border-box;
-  height:39rem;
+  padding-top: 6rem;
+  
 `
 export const BodyWrapper = styled.div`
   width: 100%;
@@ -76,13 +80,15 @@ export const ChatContainer = styled.div`
 `
 
 export const ChatWrapper = styled.div`
-  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  min-height: 30rem;
+  padding:1rem;
+  box-sizing: border-box;
 `
 
 export const BubbleBox = styled.div`
@@ -92,7 +98,7 @@ export const BubbleBox = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
-  overflow: auto;
+  margin-bottom: 7rem;
 `
 
 export const BubbleRow = styled.div<{type:'user'|'gpt'}>`
@@ -115,7 +121,7 @@ export const BubbleRow = styled.div<{type:'user'|'gpt'}>`
   .BubbleContainer {
     width: auto;
     height: auto;
-    max-width: 292px;
+    max-width: 50%;
 
     .BubbleWrapper {
       display: flex;
@@ -147,9 +153,14 @@ export const ChatInputContainer = styled.div`
   padding: 10px;
   box-sizing: border-box;
   border-top: 0.5px solid #cccccc;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  background: #fff;
 `
 
-export const ChatInputWrapper = styled.div`
+export const ChatInputWrapper = styled.form`
   height: auto;
   display: flex;
   justify-content: center;

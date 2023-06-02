@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {KeyboardEventHandler, useEffect, useRef, useState} from 'react';
 import {
     BodyContainer,
     BodyWrapper,
@@ -18,8 +18,7 @@ import {Box, Button, Icon} from "@mui/material";
 import logo from './emblem.png'
 
 
-
-const getGPTResponse = async (questionText:string) => {
+const getGPTResponse = async (messages:any[]) => {
 
     const result = await fetch('http://localhost:8080/chat-gpt/question', {
         method: 'POST', // HTTP 요청 메서드 설정
@@ -27,11 +26,18 @@ const getGPTResponse = async (questionText:string) => {
             'Content-Type': 'application/json' // 요청 바디의 데이터 타입 설정
         },
         body:JSON.stringify({
-            question:questionText
+            messages
         }),
-    }).then(res => res.json())
-
-    return result;
+    }).then(res =>{
+        if(!res.ok){
+            throw new Error('에러')
+        }
+        return res.json()
+    })
+    const parsed = JSON.stringify(result)
+    console.log(result)
+    console.log(parsed)
+    return parsed;
 }
 
 export interface Bubble {
@@ -42,15 +48,37 @@ export interface Bubble {
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
+    const [isEntered, setIsEntered] = useState(false);
 
 
     const handleSendMessage = async () => {
-        let currentInput:string = inputRef.current ? inputRef.current.value as string : ''
-        setContent(prev => [...prev, {type:'user', text:currentInput}]);
-        const response = await getGPTResponse(currentInput)
-        setContent(prev => [...prev,{type:'gpt',text:response.choices[0].text as string} ])
-        currentInput = '';
+        if(inputRef.current){
+            const currentInput = inputRef.current.value ?? ''
+            setContent(prev => [...prev, {type:'user', text:currentInput}]);
+            const response = await getGPTResponse([{role:'system', content:currentInput}])
+            const parsed:string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>')
+            setContent(prev => [...prev,{type:'gpt',text:parsed as string} ])
+            inputRef.current.value = ''
+        }
     }
+
+    const handleEnterText:KeyboardEventHandler<HTMLFormElement> = async (e) => {
+
+        if(e.key === 'Enter' && !isEntered) {
+            setIsEntered(true);
+            await handleSendMessage();
+            if(inputRef.current){
+                inputRef.current.value = ''
+            }
+        }
+
+    }
+
+    useEffect(()=>{
+        setIsEntered(false);
+    })
+
+
 
     return (
         <Root>
@@ -73,20 +101,21 @@ const Chat = () => {
                                     {content?.map(bubble => {
                                         return <BubbleRow key={bubble.text} type={bubble.type} >
                                             <div className='BubbleContainer'>
-                                                <div className='BubbleWrapper'>{bubble.text}</div>
+                                                <div dangerouslySetInnerHTML={{__html: bubble.text}} className='BubbleWrapper'></div>
                                             </div>
                                         </BubbleRow>
                                     })}
                                 </BubbleBox>
-                                <ChatInputContainer>
-                                    <ChatInputWrapper>
-                                        <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
-                                        <Button onClick={handleSendMessage}>
-                                            전송
-                                        </Button>
-                                    </ChatInputWrapper>
-                                </ChatInputContainer>
+
                             </ChatWrapper>
+                            <ChatInputContainer>
+                                <ChatInputWrapper onKeyDown={handleEnterText}>
+                                    <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
+                                    <Button onClick={handleSendMessage}>
+                                        전송
+                                    </Button>
+                                </ChatInputWrapper>
+                            </ChatInputContainer>
                         </ChatContainer>
                     </BodyWrapper>
                 </BodyContainer>
