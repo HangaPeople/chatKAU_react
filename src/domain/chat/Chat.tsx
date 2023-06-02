@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {KeyboardEventHandler, useEffect, useRef, useState} from 'react';
 import {
     BodyContainer,
     BodyWrapper,
@@ -28,9 +28,16 @@ const getGPTResponse = async (messages:any[]) => {
         body:JSON.stringify({
             messages
         }),
-    }).then(res => res.json())
-
-    return result;
+    }).then(res =>{
+        if(!res.ok){
+            throw new Error('에러')
+        }
+        return res.json()
+    })
+    const parsed = JSON.stringify(result)
+    console.log(result)
+    console.log(parsed)
+    return parsed;
 }
 
 export interface Bubble {
@@ -41,15 +48,37 @@ export interface Bubble {
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
+    const [isEntered, setIsEntered] = useState(false);
 
 
     const handleSendMessage = async () => {
-        let currentInput:string = inputRef.current ? inputRef.current.value as string : ''
-        setContent(prev => [...prev, {type:'user', text:currentInput}]);
-        const response = await getGPTResponse([{role:'system', content:currentInput}])
-        setContent(prev => [...prev,{type:'gpt',text:response.choices[0].message.content as string} ])
-        currentInput = '';
+        if(inputRef.current){
+            const currentInput = inputRef.current.value ?? ''
+            setContent(prev => [...prev, {type:'user', text:currentInput}]);
+            const response = await getGPTResponse([{role:'system', content:currentInput}])
+            const parsed:string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>')
+            setContent(prev => [...prev,{type:'gpt',text:parsed as string} ])
+            inputRef.current.value = ''
+        }
     }
+
+    const handleEnterText:KeyboardEventHandler<HTMLFormElement> = async (e) => {
+
+        if(e.key === 'Enter' && !isEntered) {
+            setIsEntered(true);
+            await handleSendMessage();
+            if(inputRef.current){
+                inputRef.current.value = ''
+            }
+        }
+
+    }
+
+    useEffect(()=>{
+        setIsEntered(false);
+    })
+
+
 
     return (
         <Root>
@@ -72,20 +101,21 @@ const Chat = () => {
                                     {content?.map(bubble => {
                                         return <BubbleRow key={bubble.text} type={bubble.type} >
                                             <div className='BubbleContainer'>
-                                                <div className='BubbleWrapper'>{bubble.text}</div>
+                                                <div dangerouslySetInnerHTML={{__html: bubble.text}} className='BubbleWrapper'></div>
                                             </div>
                                         </BubbleRow>
                                     })}
                                 </BubbleBox>
-                                <ChatInputContainer>
-                                    <ChatInputWrapper>
-                                        <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
-                                        <Button onClick={handleSendMessage}>
-                                            전송
-                                        </Button>
-                                    </ChatInputWrapper>
-                                </ChatInputContainer>
+
                             </ChatWrapper>
+                            <ChatInputContainer>
+                                <ChatInputWrapper onKeyDown={handleEnterText}>
+                                    <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
+                                    <Button onClick={handleSendMessage}>
+                                        전송
+                                    </Button>
+                                </ChatInputWrapper>
+                            </ChatInputContainer>
                         </ChatContainer>
                     </BodyWrapper>
                 </BodyContainer>
