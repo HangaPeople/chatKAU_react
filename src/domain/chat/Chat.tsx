@@ -20,9 +20,9 @@ import logo from './emblem.png'
 
 const getGPTResponse = async (body:{
     type:string;
-    message:[{role:string,content:string}]
+    messages:[{role:string,content:string}]
 }) => {
-
+    console.log(body)
     const result = await fetch('http://localhost:8080/chat-gpt/question', {
         method: 'POST', // HTTP 요청 메서드 설정
         headers: {
@@ -62,7 +62,7 @@ const Chat = () => {
         if(inputRef.current){
             const currentInput = inputRef.current.value ?? ''
             setContent(prev => [...prev, {type:'user', text:currentInput}]);
-            const response = await getGPTResponse({message:[{role:'system', content:currentInput}] ,type:responseType})
+            const response = await getGPTResponse({messages:[{role:'system', content:currentInput}] ,type:responseType})
             const parsed:string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>')
             setContent(prev => [...prev,{type:'gpt',text:parsed as string} ])
             inputRef.current.value = ''
