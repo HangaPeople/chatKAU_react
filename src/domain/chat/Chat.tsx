@@ -28,9 +28,7 @@ const getGPTResponse = async (body:{
         headers: {
             'Content-Type': 'application/json' // 요청 바디의 데이터 타입 설정
         },
-        body:JSON.stringify({
-            messages
-        }),
+        body:JSON.stringify(body),
     }).then(res =>{
         if(!res.ok){
             throw new Error('에러')
