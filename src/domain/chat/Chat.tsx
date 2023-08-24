@@ -22,8 +22,7 @@ const getGPTResponse = async (body:{
     type:string;
     messages:[{role:string,content:string}]
 }) => {
-    console.log(body)
-    const result = await fetch('http://localhost:8080/chat-gpt/question', {
+    const result = await fetch('http://localhost:8000/langchainTest', {
         method: 'POST', // HTTP 요청 메서드 설정
         headers: {
             'Content-Type': 'application/json' // 요청 바디의 데이터 타입 설정
@@ -36,8 +35,6 @@ const getGPTResponse = async (body:{
         return res.json()
     })
     const parsed = JSON.stringify(result)
-    console.log(result)
-    console.log(parsed)
     return parsed;
 }
 
@@ -55,8 +52,6 @@ const Chat = () => {
     const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
         setResponseType(event.target.value);
     };
-
-
 
     const handleSendMessage = async () => {
         if(inputRef.current){
@@ -85,10 +80,7 @@ const Chat = () => {
         setIsEntered(false);
     })
 
-
-
     // @ts-ignore
-
     return (
         <Root>
             <Wrapper>
@@ -126,21 +118,16 @@ const Chat = () => {
                                         </BubbleRow>
                                     })}
                                 </BubbleBox>
-
                             </ChatWrapper>
                             <ChatInputContainer>
-
                                 <ChatInputWrapper onKeyDown={handleEnterText}>
                                     <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
                                     <Button onClick={handleSendMessage}>
                                         전송
                                     </Button>
                                 </ChatInputWrapper>
-
                             </ChatInputContainer>
-
                         </ChatContainer>
-
                     </BodyWrapper>
                 </BodyContainer>
             </Wrapper>
