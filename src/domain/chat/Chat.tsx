@@ -1,4 +1,4 @@
-import React, {ChangeEventHandler, KeyboardEventHandler, useEffect, useRef, useState} from 'react';
+import React, {KeyboardEventHandler, useEffect, useRef, useState} from 'react';
 import {
     BodyContainer,
     BodyWrapper,
@@ -8,99 +8,76 @@ import {
     ChatInput,
     ChatInputContainer,
     ChatInputWrapper,
-    ChatWrapper, FloatFormControl, HeaderContainer, HeaderWrapper,
+    ChatWrapper, HeaderContainer, HeaderWrapper,
     NameContainer, NameWrapper,
     Root,
     Wrapper
 } from "./Chat.styles";
-import {Box, Button, FormControl, FormControlLabel, FormLabel, Icon, Radio, RadioGroup} from "@mui/material";
+import {Button} from "@mui/material";
 
 import logo from './emblem.png'
-
-
-const getGPTResponse = async (body:{
-    type:string;
-    messages:[{role:string,content:string}]
-}) => {
-    const result = await fetch('http://ec2-13-209-97-116.ap-northeast-2.compute.amazonaws.com:8080/langchainTest', {
-        method: 'POST', // HTTP 요청 메서드 설정
-        headers: {
-            'Content-Type': 'application/json' // 요청 바디의 데이터 타입 설정
-        },
-        body:JSON.stringify(body),
-    }).then(res =>{
-        if(!res.ok){
-            throw new Error('에러')
-        }
-        return res.json()
-    })
-    const parsed = JSON.stringify(result)
-    return parsed;
-}
-
-export interface Bubble {
-    type: 'user' | 'gpt';
-    text:string;
-}
+import {Bubble, commonQuestions} from "../../atom/Chat";
+import {getGPTResponse} from "../../api/ResponseApi";
+import SlideMenu from "../../atom/InitialSlideMenu";
 
 const Chat = () => {
-    const [content, setContent] = useState<Bubble[]>([]);
+    const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "content": SlideMenu()}]);
     const inputRef = useRef<HTMLInputElement>(null);
     const [isEntered, setIsEntered] = useState(false);
     const [responseType, setResponseType] = useState('simple');
-
-    const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        setResponseType(event.target.value);
-    };
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [buttonDisabled, setButtonDisable] = useState(false);
 
     const handleSendMessage = async () => {
         if(inputRef.current){
             const currentInput = inputRef.current.value ?? ''
+            inputRef.current.value = ''
             setContent(prev => [...prev, {type:'user', text:currentInput}]);
             const response = await getGPTResponse({messages:[{role:'system', content:currentInput}] ,type:responseType})
             const parsed:string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>')
             setContent(prev => [...prev,{type:'gpt',text:parsed as string} ])
-            inputRef.current.value = ''
         }
     }
 
     const handleEnterText:KeyboardEventHandler<HTMLFormElement> = async (e) => {
-
         if(e.key === 'Enter' && !isEntered) {
             setIsEntered(true);
             await handleSendMessage();
-            if(inputRef.current){
-                inputRef.current.value = ''
-            }
         }
-
     }
 
     useEffect(()=>{
         setIsEntered(false);
     })
 
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if(currentIndex < content[content.length - 1].text.length) {
+                setButtonDisable(true);
+                setCurrentIndex(currentIndex + 1);
+            }
+        }, 100);
+
+        if(currentIndex === content[content.length - 1].text.length) {
+            setButtonDisable(false);
+            clearTimeout(timeoutId);
+        }
+
+        return () => {
+            clearTimeout(timeoutId);
+        };
+    }, [currentIndex, content[content.length - 1].text]);
+
     // @ts-ignore
     return (
         <Root>
             <Wrapper>
                 <HeaderContainer>
-                    <FloatFormControl>
-                        <RadioGroup
-                            row
-                            aria-labelledby="demo-row-radio-buttons-group-label"
-                            name="row-radio-buttons-group"
-                            defaultValue="simple"
-                        >
-                                <FormControlLabel value="detail" control={<Radio size={'small'} onChange={handleChangeRadio} />} label="자세히" />
-                                <FormControlLabel value="simple" control={<Radio size={'small'} onChange={handleChangeRadio}  />} label="간단히" />
-                        </RadioGroup>
-                    </FloatFormControl>
                     <HeaderWrapper>
                         <NameContainer>
                             <NameWrapper>
                                 <img src={logo} alt="로고"/>
-                                kau-GPT
+                                KAU-GPT
                             </NameWrapper>
                         </NameContainer>
                     </HeaderWrapper>
@@ -113,7 +90,8 @@ const Chat = () => {
                                     {content?.map(bubble => {
                                         return <BubbleRow key={bubble.text} type={bubble.type} >
                                             <div className='BubbleContainer'>
-                                                <div dangerouslySetInnerHTML={{__html: bubble.text}} className='BubbleWrapper'></div>
+                                                <div dangerouslySetInnerHTML={{__html: bubble.text.substring(0, currentIndex)}} className='BubbleWrapper'></div>
+                                                <div>{bubble.content}</div>
                                             </div>
                                         </BubbleRow>
                                     })}
@@ -122,7 +100,7 @@ const Chat = () => {
                             <ChatInputContainer>
                                 <ChatInputWrapper onKeyDown={handleEnterText}>
                                     <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
-                                    <Button onClick={handleSendMessage}>
+                                    <Button onClick={handleSendMessage} disabled = {buttonDisabled}>
                                         전송
                                     </Button>
                                 </ChatInputWrapper>
