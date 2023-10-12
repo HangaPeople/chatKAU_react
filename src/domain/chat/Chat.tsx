@@ -16,9 +16,9 @@ import {
 import {Button} from "@mui/material";
 
 import logo from './emblem.png'
-import {Bubble, commonQuestions} from "../../atom/Chat";
+import {Bubble} from "../../components/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
-import SlideMenu from "../../atom/InitialSlideMenu";
+import SlideMenu from "../../components/InitialSlideMenu";
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "content": SlideMenu()}]);
@@ -90,8 +90,9 @@ const Chat = () => {
                                     {content?.map(bubble => {
                                         return <BubbleRow key={bubble.text} type={bubble.type} >
                                             <div className='BubbleContainer'>
-                                                <div dangerouslySetInnerHTML={{__html: bubble.text.substring(0, currentIndex)}} className='BubbleWrapper'></div>
-                                                <div>{bubble.content}</div>
+                                                <div dangerouslySetInnerHTML={{__html: bubble.text.substring(0, currentIndex)}} className='BubbleWrapper'>
+                                                    {bubble.content}
+                                                </div>
                                             </div>
                                         </BubbleRow>
                                     })}

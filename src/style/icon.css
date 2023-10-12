@@ -1,0 +1,17 @@
+.menu_item {
+    display: block;
+    margin: 0 auto 5px;
+    width: 30px;
+    height: 30px;
+}
+
+.icon {
+    overflow: hidden;
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: top;
+}
+
+.icon_text {
+
+}
