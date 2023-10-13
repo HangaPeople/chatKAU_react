@@ -1,17 +1,77 @@
-.menu_item {
-    display: block;
-    margin: 0 auto 5px;
-    width: 30px;
-    height: 30px;
+dl, li, menu, ol, ul {
+    list-style: none;
+}
+
+#menu_item_container, #menu_item_container:active, #menu_item_container:hover {
+    /*49*/
+    text-decoration: none;
+}
+
+#menu_item_container:-webkit-any-link {
+    color: -webkit-link;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .icon {
+    /*51*/
     overflow: hidden;
     background-size: contain;
     background-repeat: no-repeat;
     vertical-align: top;
 }
 
-.icon_text {
+.menu_item {
+    /*588*/
+    display: inline-block;
+    width: 33.333%;
+    vertical-align: top;
+}
 
+.menu_item .menu_link {
+    /*589*/
+    display: block;
+    padding-top: 9px;
+    min-width: 68px;
+    height: 80px;
+    margin: 8px 0 0 5px;
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid #dbe3e8;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.menu_link .menu_unit {
+    /*590*/
+    display: inline-block;
+    height: 28px;
+    vertical-align: middle;
+}
+
+.menu_link .icon_txt, .menu_unit:after {
+    /*591*/
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.menu_link .icon_txt {
+    /*591*/
+    font-size: 10px;
+    color: black;
+    line-height: 1.2;
+    font-weight: 500;
+}
+
+.menu_item .icon {
+    /*596*/
+    display: block;
+    margin: 0 auto 5px;
+    width: 30px;
+    height: 30px;
+}
+
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
 }

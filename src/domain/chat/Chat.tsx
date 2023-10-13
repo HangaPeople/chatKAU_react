@@ -16,12 +16,49 @@ import {
 import {Button} from "@mui/material";
 
 import logo from './emblem.png'
-import {Bubble} from "../../components/Chat";
+import {Bubble, CommonQuestion} from "../../components/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
 import SlideMenu from "../../components/InitialSlideMenu";
 
+const questions: CommonQuestion[] = [
+    {
+        "logo": "logo192.png",
+        "question": "학식 메뉴"
+    },
+    {
+        "logo": "logo192.png",
+        "question": "학식 메뉴"
+    },
+    {
+        "logo": "logo192.png",
+        "question": "학식 메뉴"
+    },
+    {
+        "logo": "logo192.png",
+        "question": "학식 메뉴"
+    },
+    {
+        "logo": "logo192.png",
+        "question": "학식 메뉴"
+    },
+    {
+        "logo": "logo192.png",
+        "question": "학식 메뉴"
+    },
+    {
+        "logo": "logo192.png",
+        "question": "학식 메뉴"
+    },
+];
+
 const Chat = () => {
-    const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "content": SlideMenu()}]);
+    const [content, setContent] = useState<Bubble[]>([
+        {
+            "type": "gpt",
+            "text": "안녕하세요, 무엇을 도와드릴까요?",
+            "content": <SlideMenu questions={questions}/>
+        }
+    ]);
     const inputRef = useRef<HTMLInputElement>(null);
     const [isEntered, setIsEntered] = useState(false);
     const [responseType, setResponseType] = useState('simple');
@@ -68,7 +105,6 @@ const Chat = () => {
         };
     }, [currentIndex, content[content.length - 1].text]);
 
-    // @ts-ignore
     return (
         <Root>
             <Wrapper>
@@ -91,8 +127,8 @@ const Chat = () => {
                                         return <BubbleRow key={bubble.text} type={bubble.type} >
                                             <div className='BubbleContainer'>
                                                 <div dangerouslySetInnerHTML={{__html: bubble.text.substring(0, currentIndex)}} className='BubbleWrapper'>
-                                                    {bubble.content}
                                                 </div>
+                                                {bubble.content}
                                             </div>
                                         </BubbleRow>
                                     })}
