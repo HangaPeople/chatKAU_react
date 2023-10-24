@@ -9,7 +9,8 @@ interface SlideMenuProps {
 
 function SlideMenu({questions}: SlideMenuProps) {
     return (
-        <div className={"slide-menu"}>
+        // <div className={"slide-menu"}>
+        <div>
             {/*<div className={"menu-content"}>*/}
             {/*    <ul className={"menu_list"}>*/}
             {/*        <div id={"menu_list_id"} className={"menu_list_class"}>*/}

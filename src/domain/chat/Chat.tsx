@@ -93,7 +93,7 @@ const Chat = () => {
                 setButtonDisable(true);
                 setCurrentIndex(currentIndex + 1);
             }
-        }, 100);
+        }, 30);
 
         if(currentIndex === content[content.length - 1].text.length) {
             setButtonDisable(false);

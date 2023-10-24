@@ -116,9 +116,6 @@ export const BubbleRow = styled.div<{type:'user'|'gpt'}>`
     return 'flex-end'
   }};
 
-  
-
-
   .BubbleContainer {
     width: auto;
     height: auto;
