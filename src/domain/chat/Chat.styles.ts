@@ -1,5 +1,10 @@
 import {FormControl, TextField} from '@mui/material'
 import styled from '@emotion/styled'
+
+type SettingsContainerProps = {
+    isOpen: boolean;
+};
+
 export const Root = styled.div`
   //margin-top: 64px;
   //max-width: 400px;
@@ -26,19 +31,30 @@ export const HeaderContainer = styled.div`
 
 export const HeaderWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
   padding: 12px;
   width: 100%;
-  background: rgba(255, 255, 255, 1);
+  background: rgba(240, 240, 255, 1);
   backdrop-filter: blur(15px);
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  
 `
+
+export const MenuIcon = styled.div`
+  width: 30px;
+  height: 30px;
+  background: url(/menuIcon.png) no-repeat center;
+  background-size: cover;
+  cursor: pointer;
+  margin-right: 20px;
+`;
 
 export const NameContainer = styled.div`
   width: 100%;
   height: 100%;
+
 `
 
 export const NameWrapper = styled.div`
@@ -58,7 +74,9 @@ export const BodyContainer = styled.div`
   width: 100%;
   box-sizing: border-box;
   padding-top: 6rem;
-  
+  background: rgba(255, 255, 255, 1);
+
+
 `
 export const BodyWrapper = styled.div`
   width: 100%;
@@ -101,6 +119,15 @@ export const BubbleBox = styled.div`
   height: 100%;
   margin-bottom: 7rem;
 `
+
+export const ChatIcon = styled.img`
+  align-self: flex-start;
+  display: flex;
+  margin-right: 1rem;
+  margin-left: -1.5rem;
+  width: 40px;
+  height: 50px;
+`;
 
 export const BubbleRow = styled.div<{type:'user'|'gpt'}>`
   display: flex;
@@ -205,3 +232,47 @@ export const FloatFormControl = styled(FormControl)`
     width:100%;
   }
 `
+
+export const SettingsContainer = styled.div<SettingsContainerProps>`
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 250px;
+  height: 100vh;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.1);
+  display: ${props => props.isOpen ? 'block' : 'none'};
+`;
+
+export const SettingsButtonsWrapper = styled.div`
+  padding-top: 40px;
+`;
+
+export const SettingButton = styled.button`
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  border: none;
+  background: rgba(100, 100, 255, 1); 
+  color: white;  
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s;  
+
+  &:hover {
+    background: rgba(225, 225, 255, 1);
+  }
+`;
+
+export const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  &:hover {
+    color: red;  
+  }
+`;
