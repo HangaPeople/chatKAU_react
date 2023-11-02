@@ -22,6 +22,7 @@ import logo from './emblem.png'
 import {Bubble, commonQuestions} from "../../atom/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
 import SlideMenu from "../../atom/InitialSlideMenu";
+import LoginModal from "../../pages/LoginModal";
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "content": SlideMenu()}]);
@@ -39,6 +40,7 @@ const Chat = () => {
         ["수강지도상담", "졸업", "교양수업"],
         ["휴학", "복학", "등록안내"]
     ];
+    const [ isLoginModalOpen, setLoginModalOpen ] = useState(false);
 
     const handleGridClick = async (i: number, j: number) => {
         const messageToSend = gridMessages[i][j];
@@ -47,6 +49,14 @@ const Chat = () => {
         const parsedResponse = JSON.parse(response);
         const parsed: string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>');
         setContent(prev => [...prev, {type: 'gpt', text: parsed, original: parsedResponse.choices[0].message.content_origin, fromGrid: true}]);
+    };
+
+    const openLoginModal = () => {
+        setLoginModalOpen(true);
+    };
+
+    const closeLoginModal = () => {
+        setLoginModalOpen(false)
     };
 
     const handleSendMessage = async () => {
@@ -139,7 +149,8 @@ const Chat = () => {
                         <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>
 
                         <SettingsButtonsWrapper>
-                            <SettingButton onClick={() => console.log('로그인')}>로그인</SettingButton>
+                            <SettingButton onClick={ openLoginModal }>로그인</SettingButton>
+                            <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} />
                             <SettingButton onClick={() => console.log('종합 정보 시스템')}>종합 정보 시스템</SettingButton>
                             <SettingButton onClick={() => console.log('홈페이지')}>홈페이지</SettingButton>
                         </SettingsButtonsWrapper>
