@@ -142,19 +142,21 @@ const Chat = () => {
                                     KAU-GPT
                                 </NameWrapper>
                             </NameContainer>
-                            <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
+                            <button onClick={ openLoginModal }>로그인</button>
+                            <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} />
+                            {/*<MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>*/}
                         </HeaderWrapper>
                     </HeaderContainer>
-                    <SettingsContainer isOpen={isSettingsOpen}>
-                        <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>
 
-                        <SettingsButtonsWrapper>
-                            <SettingButton onClick={ openLoginModal }>로그인</SettingButton>
-                            <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} />
-                            <SettingButton onClick={() => console.log('종합 정보 시스템')}>종합 정보 시스템</SettingButton>
-                            <SettingButton onClick={() => console.log('홈페이지')}>홈페이지</SettingButton>
-                        </SettingsButtonsWrapper>
-                    </SettingsContainer>
+                    {/*<SettingsContainer isOpen={isSettingsOpen}>*/}
+                    {/*    <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>*/}
+
+                    {/*    <SettingsButtonsWrapper>*/}
+                    {/*        <SettingButton onClick={ openLoginModal }>로그인</SettingButton>*/}
+                    {/*        <SettingButton onClick={() => console.log('종합 정보 시스템')}>종합 정보 시스템</SettingButton>*/}
+                    {/*        <SettingButton onClick={() => console.log('홈페이지')}>홈페이지</SettingButton>*/}
+                    {/*    </SettingsButtonsWrapper>*/}
+                    {/*</SettingsContainer>*/}
                     <BodyContainer>
                         <BodyWrapper>
                             <ChatContainer>

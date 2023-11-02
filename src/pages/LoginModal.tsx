@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {StudentInfoRequest} from "../atom/Student";
+import {Student, StudentInfoRequest} from "../atom/Student";
 import {getLoginInfo} from "../api/LoginApi";
 import "../style/LoginModal.css"
 
@@ -17,10 +17,15 @@ class LoginModal extends Component<any, any> {
 
     loginClickHandler = async () => {
         const {studentNumber, password} = this.state;
-        const response = await getLoginInfo<StudentInfoRequest>({
+        getLoginInfo<Student>({
             "studentNumber": studentNumber,
             "password": password
-        } as StudentInfoRequest)
+        } as StudentInfoRequest).then(res => {
+            if(res !== null) {
+                localStorage.setItem("isLogin", "true");
+                localStorage.setItem("student", JSON.stringify(res));
+            }
+        })
     }
 
     render() {
