@@ -19,7 +19,7 @@ import {
 import {Button} from "@mui/material";
 
 import logo from './emblem.png'
-import {Bubble, commonQuestions} from "../../atom/Chat";
+import {Bubble} from "../../atom/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
 import SlideMenu from "../../atom/InitialSlideMenu";
 import LoginModal from "../../pages/LoginModal";

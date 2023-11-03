@@ -1,9 +1,10 @@
 export interface Student {
-    year: number;
+    studentNumber: number;
     name: string;
     major: string;
-    majorScore: number;
-    generalScore: number;
+    majorScore: number; // 전공학점
+    generalScore: number; // 교양학점
+    totalScore: number; // 총학점
 }
 
 export interface StudentInfoRequest {
