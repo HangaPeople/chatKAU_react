@@ -8,7 +8,7 @@ export const getLoginInfo = async<Student> (request: StudentInfoRequest): Promis
     try {
         const { status, data }: AxiosResponse<Student> = await axios.post(path, request);
 
-        return status < 500 ? data : null
+        return status < 300 ? data : null
     } catch(err) {
         console.log(err)
     }
