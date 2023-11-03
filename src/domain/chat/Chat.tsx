@@ -41,6 +41,7 @@ const Chat = () => {
         ["휴학", "복학", "등록안내"]
     ];
     const [ isLoginModalOpen, setLoginModalOpen ] = useState(false);
+    const [ isHidden, setIsHidden ] = useState(false);
 
     const handleGridClick = async (i: number, j: number) => {
         const messageToSend = gridMessages[i][j];
@@ -79,6 +80,7 @@ const Chat = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         setModalContent('');
+        setIsHidden(false)
     }
 
     const handleEnterText:KeyboardEventHandler<HTMLFormElement> = async (e) => {
@@ -142,21 +144,22 @@ const Chat = () => {
                                     KAU-GPT
                                 </NameWrapper>
                             </NameContainer>
-                            <button onClick={ openLoginModal }>로그인</button>
-                            <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} />
-                            {/*<MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>*/}
+                            {/*<button onClick={ openLoginModal }>로그인</button>*/}
+                            {/*<LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} />*/}
+                            <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
                         </HeaderWrapper>
                     </HeaderContainer>
 
-                    {/*<SettingsContainer isOpen={isSettingsOpen}>*/}
-                    {/*    <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>*/}
+                    <SettingsContainer isOpen={isSettingsOpen}>
+                        <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>
 
-                    {/*    <SettingsButtonsWrapper>*/}
-                    {/*        <SettingButton onClick={ openLoginModal }>로그인</SettingButton>*/}
-                    {/*        <SettingButton onClick={() => console.log('종합 정보 시스템')}>종합 정보 시스템</SettingButton>*/}
-                    {/*        <SettingButton onClick={() => console.log('홈페이지')}>홈페이지</SettingButton>*/}
-                    {/*    </SettingsButtonsWrapper>*/}
-                    {/*</SettingsContainer>*/}
+                        <SettingsButtonsWrapper>
+                            <SettingButton onClick={ openLoginModal }>로그인</SettingButton>
+                            <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} />
+                            <SettingButton onClick={() => console.log('종합 정보 시스템')}>종합 정보 시스템</SettingButton>
+                            <SettingButton onClick={() => console.log('홈페이지')}>홈페이지</SettingButton>
+                        </SettingsButtonsWrapper>
+                    </SettingsContainer>
                     <BodyContainer>
                         <BodyWrapper>
                             <ChatContainer>
@@ -172,12 +175,15 @@ const Chat = () => {
                                                         <div className='BubbleContainer'>
                                                             <div dangerouslySetInnerHTML={{__html: bubble.text}} className='BubbleWrapper'></div>
                                                             <div>{bubble.content}</div>
-                                                            {bubble.type === 'gpt' && bubble.original && !bubble.fromGrid &&
+                                                            {bubble.type === 'gpt' && bubble.original && !bubble.fromGrid && !isHidden &&
                                                                 <Button onClick={() => {
                                                                     if (bubble.original) {
                                                                         openOriginalContentInModal(bubble.original);
+
+                                                                        setIsHidden(true);
                                                                     }
-                                                                }}>
+                                                                    console.log(isHidden)
+                                                                }} >
                                                                     자세히 보기
                                                                 </Button>
                                                             }
