@@ -149,7 +149,7 @@ export const BubbleRow = styled.div<{type:'user'|'gpt'}>`
   .BubbleContainer {
     width: auto;
     height: auto;
-    max-width: 50%;
+    max-width: 70%;
 
     .BubbleWrapper {
       display: flex;

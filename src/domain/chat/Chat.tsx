@@ -14,7 +14,7 @@ import {
     ChatWrapper, HeaderContainer, HeaderWrapper,
     NameContainer, NameWrapper,
     Root,
-    Wrapper
+    Wrapper,
 } from "./Chat.styles";
 import {Button} from "@mui/material";
 
@@ -49,7 +49,7 @@ const Chat = () => {
         const response = await getGPTResponse({messages: [{role: 'system', content: messageToSend}], type: responseType});
         const parsedResponse = JSON.parse(response);
         const parsed: string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>');
-        setContent(prev => [...prev, {type: 'gpt', text: parsed, original: parsedResponse.choices[0].message.content_origin, fromGrid: true}]);
+        setContent(prev => [...prev, {type: 'gpt', text: parsed, original: parsedResponse.choices[0].message.content_origin, metadata: parsedResponse.choices[0].message.metadata, fromGrid: true}]);
     };
 
     const openLoginModal = () => {
@@ -104,12 +104,12 @@ const Chat = () => {
                 setButtonDisable(true);
                 setCurrentIndex(currentIndex + 1);
             }
-        }, 30);
 
-        if(currentIndex === content[content.length - 1].text.length) {
-            setButtonDisable(false);
-            clearTimeout(timeoutId);
-        }
+            if(currentIndex === content[content.length - 1].text.length) {
+                setButtonDisable(false);
+                clearTimeout(timeoutId);
+            }
+        }, 30);
 
         return () => {
             clearTimeout(timeoutId);
@@ -173,8 +173,10 @@ const Chat = () => {
                                                             <ChatIcon src="항공대캐릭터.png" alt="User Icon" />
                                                         )}
                                                         <div className='BubbleContainer'>
-                                                            <div dangerouslySetInnerHTML={{__html: bubble.text}} className='BubbleWrapper'></div>
-                                                            <div>{bubble.content}</div>
+                                                            <div dangerouslySetInnerHTML={{__html: bubble.type === 'gpt' && bubble.metadata !== 'DB' ? bubble.text.substring(0, currentIndex) : bubble.text}} className='BubbleWrapper'></div>
+                                                            <div>
+                                                                {bubble.content}
+                                                            </div>
                                                             {bubble.type === 'gpt' && bubble.original && !bubble.fromGrid && !isHidden &&
                                                                 <Button onClick={() => {
                                                                     if (bubble.original) {
