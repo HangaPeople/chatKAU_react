@@ -109,7 +109,7 @@ const Chat = () => {
                 setButtonDisable(false);
                 clearTimeout(timeoutId);
             }
-        }, 30);
+        }, 10);
 
         return () => {
             clearTimeout(timeoutId);
