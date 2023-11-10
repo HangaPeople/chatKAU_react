@@ -1,4 +1,3 @@
-import {commonQuestions} from "./Chat";
 
 function SlideMenu() {
     // questions: CommonQuestion[] = commonQuestions
