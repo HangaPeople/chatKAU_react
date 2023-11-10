@@ -14,7 +14,7 @@ import {
     ChatWrapper, HeaderContainer, HeaderWrapper,
     NameContainer, NameWrapper,
     Root,
-    Wrapper,
+    Wrapper, CancelGenerateResponse, CancelButtonWrapper,
 } from "./Chat.styles";
 import {Button} from "@mui/material";
 
@@ -129,7 +129,7 @@ const Chat = () => {
                         backgroundColor: 'white', padding: '20px', maxWidth: '80%', maxHeight: '80%',
                         overflowY: 'auto'
                     }}>
-                        <button onClick={closeModal} style={{ float: 'right' }}>X</button>
+                        <button onClick={closeModal} style={{ float: 'right' }}>&times;</button>
                         <div>{modalContent}</div>
                     </div>
                 </div>
@@ -173,11 +173,11 @@ const Chat = () => {
                                                             <ChatIcon src="항공대캐릭터.png" alt="User Icon" />
                                                         )}
                                                         <div className='BubbleContainer'>
-                                                            <div dangerouslySetInnerHTML={{__html: bubble.type === 'gpt' && bubble.metadata !== 'DB' ? bubble.text.substring(0, currentIndex) : bubble.text}} className='BubbleWrapper'></div>
+                                                            <div dangerouslySetInnerHTML={{__html: bubble.type === 'gpt' && bubble.original !== 'DB' ? bubble.text.substring(0, currentIndex) : bubble.text}} className='BubbleWrapper'></div>
                                                             <div>
                                                                 {bubble.content}
                                                             </div>
-                                                            {bubble.type === 'gpt' && bubble.original && !bubble.fromGrid && !isHidden &&
+                                                            {bubble.type === 'gpt' && bubble.original !== 'DB' && bubble.original && !bubble.fromGrid && !isHidden &&
                                                                 <Button onClick={() => {
                                                                     if (bubble.original) {
                                                                         openOriginalContentInModal(bubble.original);
@@ -229,6 +229,9 @@ const Chat = () => {
                                         <div ref={bottomRef}></div>
                                     </BubbleBox>
                                 </ChatWrapper>
+                                <CancelButtonWrapper>
+                                    <CancelGenerateResponse>Stop Generating</CancelGenerateResponse>
+                                </CancelButtonWrapper>
                                 <ChatInputContainer>
                                     <ChatInputWrapper onKeyDown={handleEnterText}>
                                         <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>

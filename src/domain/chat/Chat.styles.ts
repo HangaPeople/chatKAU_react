@@ -1,4 +1,4 @@
-import {FormControl, TextField} from '@mui/material'
+import {Button, FormControl, TextField} from '@mui/material'
 import styled from '@emotion/styled'
 
 type SettingsContainerProps = {
@@ -206,6 +206,25 @@ export const ChatInput = styled(TextField)`
     line-height: 24px;
     border:none;
   }
+`
+
+export const CancelButtonWrapper = styled.div`
+  width: 100%;
+  height: auto;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+`
+
+export const CancelGenerateResponse = styled(Button)`
+  border-radius: 8px;
+  font-size: 13px;
+  font-color: #fff;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.3);
 `
 
 export const FloatFormControl = styled(FormControl)`
