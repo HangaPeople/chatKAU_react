@@ -23,7 +23,7 @@ export const Wrapper = styled.div`
 
 export const HeaderContainer = styled.div`
   width: 100%;
-  height: 100px;
+  height: 70px;
   position: fixed;
   top:0;
   left: 0;
@@ -36,6 +36,7 @@ export const HeaderWrapper = styled.div`
   box-sizing: border-box;
   padding: 12px;
   width: 100%;
+  height: 100%;
   background: rgba(240, 240, 255, 1);
   backdrop-filter: blur(15px);
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
@@ -62,11 +63,13 @@ export const NameWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
   font-size: 26px;
+  font-family: -apple-system, sans-serif;
   line-height: 30px;
   
   & img{
-    width:75px;
-    height:75px;
+    width:50px;
+    height:50px;
+    margin-right: 1px;
   }
 `
 
@@ -75,8 +78,6 @@ export const BodyContainer = styled.div`
   box-sizing: border-box;
   padding-top: 6rem;
   background: rgba(255, 255, 255, 1);
-
-
 `
 export const BodyWrapper = styled.div`
   width: 100%;
@@ -124,7 +125,7 @@ export const ChatIcon = styled.img`
   align-self: flex-start;
   display: flex;
   margin-right: 1rem;
-  margin-left: -1.5rem;
+  margin-left: -.5rem;
   width: 40px;
   height: 50px;
 `;
@@ -142,10 +143,7 @@ export const BubbleRow = styled.div<{type:'user'|'gpt'}>`
     }
     return 'flex-end'
   }};
-
   
-
-
   .BubbleContainer {
     width: auto;
     height: auto;
@@ -171,8 +169,6 @@ export const BubbleRow = styled.div<{type:'user'|'gpt'}>`
       }};
     }
   }
-
-
 `
 
 export const ChatInputContainer = styled.div`
@@ -294,4 +290,26 @@ export const CloseButton = styled.button`
   &:hover {
     color: red;  
   }
+`;
+
+export const ModalContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ModalContent = styled.div`
+  background: rgba(255, 255, 255, 255);
+  padding: 20px;
+  max-width: 80%;
+  max-height: 60%;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-family: -apple-system, sans-serif;
 `;

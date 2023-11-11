@@ -13,6 +13,7 @@ import {
     ChatInputWrapper,
     ChatWrapper, HeaderContainer, HeaderWrapper,
     NameContainer, NameWrapper,
+    ModalContainer, ModalContent,
     Root,
     Wrapper, CancelGenerateResponse, CancelButtonWrapper,
 } from "./Chat.styles";
@@ -120,19 +121,12 @@ const Chat = () => {
     return (
         <>
             {isModalOpen && (
-                <div style={{
-                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex',
-                    justifyContent: 'center', alignItems: 'center'
-                }}>
-                    <div style={{
-                        backgroundColor: 'white', padding: '20px', maxWidth: '80%', maxHeight: '80%',
-                        overflowY: 'auto'
-                    }}>
+                <ModalContainer>
+                    <ModalContent>
                         <button onClick={closeModal} style={{ float: 'right' }}>&times;</button>
                         <div>{modalContent}</div>
-                    </div>
-                </div>
+                    </ModalContent>
+                </ModalContainer>
             )}
             <Root>
                 <Wrapper>
