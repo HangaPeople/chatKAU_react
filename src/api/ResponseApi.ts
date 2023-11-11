@@ -18,3 +18,6 @@ export const getGPTResponse = async (body:{
 
     return JSON.stringify(result);
 }
+
+
+

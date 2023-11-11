@@ -14,7 +14,9 @@ import {
     ChatWrapper, HeaderContainer, HeaderWrapper,
     NameContainer, NameWrapper,
     ModalContainer, ModalContent,
+    TableContainer, StyledTable, StyledTableRow, StyledTableCell,
     Root,
+    LoadingIndicator,
     Wrapper, CancelGenerateResponse, CancelButtonWrapper,
 } from "./Chat.styles";
 import {Button} from "@mui/material";
@@ -37,12 +39,13 @@ const Chat = () => {
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const gridMessages = [
-        ["학식", "교내 연락처", "학사일정"],
-        ["수강지도상담", "졸업", "교양수업"],
+        ["학식", "학교 뉴스", "학사일정"],
+        ["수강지도상담", "졸업", "교내 연락처"],
         ["휴학", "복학", "등록안내"]
     ];
     const [ isLoginModalOpen, setLoginModalOpen ] = useState(false);
     const [ isHidden, setIsHidden ] = useState(false);
+    const [ isLoading, setIsLoading ] = useState(false);
 
     const handleGridClick = async (i: number, j: number) => {
         const messageToSend = gridMessages[i][j];
@@ -62,6 +65,7 @@ const Chat = () => {
     };
 
     const handleSendMessage = async () => {
+        setIsLoading(true);
         if(inputRef.current){
             const currentInput = inputRef.current.value ?? ''
             inputRef.current.value = ''
@@ -71,6 +75,7 @@ const Chat = () => {
             const parsed:string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>')
             setContent(prev => [...prev, {type:'gpt', text: parsed, original: parsedResponse.choices[0].message.content_origin} ]);
         }
+         setIsLoading(false);
     }
 
     const openOriginalContentInModal = (content: string) => {
@@ -116,6 +121,8 @@ const Chat = () => {
             clearTimeout(timeoutId);
         };
     }, [currentIndex, content[content.length - 1].text]);
+
+
 
     // @ts-ignore
     return (
@@ -186,36 +193,19 @@ const Chat = () => {
                                                         </div>
                                                     </BubbleRow>
                                                     {index === 0 && (
-                                                        <div style={{marginTop: '20px', display: 'flex', justifyContent: 'center'}}>
-                                                            <table style={{borderCollapse: 'separate'}}>
+                                                        <TableContainer>
+                                                            <StyledTable>
                                                                 {gridMessages.map((row, i) => (
-                                                                    <tr key={i}>
+                                                                    <StyledTableRow key={i}>
                                                                         {row.map((cell, j) => (
-                                                                            <td
-                                                                                key={j}
-                                                                                onClick={() => handleGridClick(i, j)}
-                                                                                style={{
-                                                                                    border: '1px solid #007BFF',
-                                                                                    padding: '10px 15px',
-                                                                                    cursor: 'pointer',
-                                                                                    transition: 'background-color 0.3s',
-                                                                                    backgroundColor: '#E5F3FF',
-                                                                                    color: '#004080',
-                                                                                    textAlign: 'center',
-                                                                                    lineHeight: '30px',
-                                                                                    width: '200px',
-                                                                                    borderRadius: '16px'
-                                                                                }}
-                                                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#CCE4FF'}
-                                                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#E5F3FF'}
-                                                                            >
+                                                                            <StyledTableCell key={j} onClick={() => handleGridClick(i, j)}>
                                                                                 {cell}
-                                                                            </td>
+                                                                            </StyledTableCell>
                                                                         ))}
-                                                                    </tr>
+                                                                    </StyledTableRow>
                                                                 ))}
-                                                            </table>
-                                                        </div>
+                                                            </StyledTable>
+                                                        </TableContainer>
                                                     )}
                                                 </React.Fragment>
                                             )
