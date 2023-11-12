@@ -30,7 +30,7 @@ const DetailModal = (detailModalProps: DetailModalProps) => {
                                 {content}
                             </div>
                             <div className='detail-modal-tail'>
-                                자세한 내용은
+                                자세한 내용은&npspace;
                                 <a href={hyperLink}>여기</a>
                                 를 클릭해주세요
                             </div>
