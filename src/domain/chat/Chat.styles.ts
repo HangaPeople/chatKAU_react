@@ -6,9 +6,6 @@ type SettingsContainerProps = {
 };
 
 export const Root = styled.div`
-  //margin-top: 64px;
-  //max-width: 400px;
-  //max-height: 500px;
   width: 100%;
   height: 100%;
 `
@@ -18,7 +15,6 @@ export const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   border-radius: 12px;
-  //box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
 `
 
 export const HeaderContainer = styled.div`

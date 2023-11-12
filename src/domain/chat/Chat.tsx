@@ -14,18 +14,18 @@ import {
     ChatWrapper, HeaderContainer, HeaderWrapper,
     NameContainer, NameWrapper,
     Root,
-    Wrapper, CancelGenerateResponse, CancelButtonWrapper,
+    Wrapper
 } from "./Chat.styles";
 import {Button} from "@mui/material";
 
 import logo from './emblem.png'
 import {Bubble} from "../../atom/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
-import SlideMenu from "../../atom/InitialSlideMenu";
 import LoginModal from "../../pages/LoginModal";
+import DetailModal from "../../pages/DetailModal";
 
 const Chat = () => {
-    const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "content": SlideMenu()}]);
+    const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?"}]);
     const inputRef = useRef<HTMLInputElement>(null);
     const [isEntered, setIsEntered] = useState(false);
     const [responseType, setResponseType] = useState('simple');
@@ -42,6 +42,10 @@ const Chat = () => {
     ];
     const [ isLoginModalOpen, setLoginModalOpen ] = useState(false);
     const [ isHidden, setIsHidden ] = useState(false);
+    const [ modalHyperLink, setModalHyperLink ] = useState('');
+    // const [ isStopButtonHidden, setIsStopButtonHidden ] = useState(false);
+    //
+    // let flag = true;
 
     const handleGridClick = async (i: number, j: number) => {
         const messageToSend = gridMessages[i][j];
@@ -57,7 +61,7 @@ const Chat = () => {
     };
 
     const closeLoginModal = () => {
-        setLoginModalOpen(false)
+        setLoginModalOpen(false);
     };
 
     const handleSendMessage = async () => {
@@ -68,12 +72,13 @@ const Chat = () => {
             const response = await getGPTResponse({messages:[{role:'system', content:currentInput}] ,type:responseType})
             const parsedResponse = JSON.parse(response);
             const parsed:string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>')
-            setContent(prev => [...prev, {type:'gpt', text: parsed, original: parsedResponse.choices[0].message.content_origin} ]);
+            setContent(prev => [...prev, {type:'gpt', text: parsed, original: parsedResponse.choices[0].message.content_origin, metadata: parsedResponse.choices[0].message.metadata} ]);
         }
     }
 
-    const openOriginalContentInModal = (content: string) => {
+    const openOriginalContentInModal = (content: string, hyperLink: string) => {
         setModalContent(content);
+        setModalHyperLink(hyperLink);
         setIsModalOpen(true);
     }
 
@@ -119,21 +124,7 @@ const Chat = () => {
     // @ts-ignore
     return (
         <>
-            {isModalOpen && (
-                <div style={{
-                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex',
-                    justifyContent: 'center', alignItems: 'center'
-                }}>
-                    <div style={{
-                        backgroundColor: 'white', padding: '20px', maxWidth: '80%', maxHeight: '80%',
-                        overflowY: 'auto'
-                    }}>
-                        <button onClick={closeModal} style={{ float: 'right' }}>&times;</button>
-                        <div>{modalContent}</div>
-                    </div>
-                </div>
-            )}
+            <DetailModal isOpen={isModalOpen} close={closeModal} content={modalContent} hyperLink={modalHyperLink} />
             <Root>
                 <Wrapper>
                     <HeaderContainer>
@@ -144,8 +135,6 @@ const Chat = () => {
                                     KAU-GPT
                                 </NameWrapper>
                             </NameContainer>
-                            {/*<button onClick={ openLoginModal }>로그인</button>*/}
-                            {/*<LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} />*/}
                             <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
                         </HeaderWrapper>
                     </HeaderContainer>
@@ -174,17 +163,13 @@ const Chat = () => {
                                                         )}
                                                         <div className='BubbleContainer'>
                                                             <div dangerouslySetInnerHTML={{__html: bubble.type === 'gpt' && bubble.original !== 'DB' ? bubble.text.substring(0, currentIndex) : bubble.text}} className='BubbleWrapper'></div>
-                                                            <div>
-                                                                {bubble.content}
-                                                            </div>
                                                             {bubble.type === 'gpt' && bubble.original !== 'DB' && bubble.original && !bubble.fromGrid && !isHidden &&
                                                                 <Button onClick={() => {
                                                                     if (bubble.original) {
-                                                                        openOriginalContentInModal(bubble.original);
+                                                                        openOriginalContentInModal(bubble.original, bubble.metadata ? bubble.metadata.source : '');
 
                                                                         setIsHidden(true);
                                                                     }
-                                                                    console.log(isHidden)
                                                                 }} >
                                                                     자세히 보기
                                                                 </Button>
@@ -229,9 +214,6 @@ const Chat = () => {
                                         <div ref={bottomRef}></div>
                                     </BubbleBox>
                                 </ChatWrapper>
-                                <CancelButtonWrapper>
-                                    <CancelGenerateResponse>Stop Generating</CancelGenerateResponse>
-                                </CancelButtonWrapper>
                                 <ChatInputContainer>
                                     <ChatInputWrapper onKeyDown={handleEnterText}>
                                         <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
