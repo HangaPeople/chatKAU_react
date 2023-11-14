@@ -45,7 +45,6 @@ const Chat = () => {
     ];
     const [ isLoginModalOpen, setLoginModalOpen ] = useState(false);
     const [ isHidden, setIsHidden ] = useState(false);
-    const [ isLoading, setIsLoading ] = useState(false);
 
     const handleGridClick = async (i: number, j: number) => {
         const messageToSend = gridMessages[i][j];
@@ -65,21 +64,57 @@ const Chat = () => {
     };
 
     const handleSendMessage = async () => {
-        setIsLoading(true);
-        if(inputRef.current){
-            const currentInput = inputRef.current.value ?? ''
-            inputRef.current.value = ''
-            setContent(prev => [...prev, {type:'user', text:currentInput}]);
-            const response = await getGPTResponse({messages:[{role:'system', content:currentInput}] ,type:responseType})
-            const parsedResponse = JSON.parse(response);
-            const parsed:string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>')
-            setContent(prev => [...prev, {type:'gpt', text: parsed, original: parsedResponse.choices[0].message.content_origin} ]);
-        }
-         setIsLoading(false);
-    }
+        if (inputRef.current) {
+            const currentInput = inputRef.current.value ?? '';
+            inputRef.current.value = '';
+            setContent(prev => [...prev, { type: 'user', text: currentInput }]);
 
-    const openOriginalContentInModal = (content: string) => {
-        setModalContent(content);
+            const query = new URLSearchParams({ question: currentInput }).toString();
+            const url = `http://localhost:8000/langchain?${query}`;
+
+            const eventSource = new EventSource(url);
+
+            eventSource.onmessage = function (event) {
+                try {
+                    const parsedData = JSON.parse(event.data);
+
+                    if (parsedData.choices) {
+                        const gptResponse = parsedData.choices[0].message.content;
+                        const contentOrigin = parsedData.choices[0].message.content_origin;
+                        const metadata = parsedData.choices[0].message.metadata.source;
+
+                        setContent(prev => {
+                            if (prev.length > 0 && prev[prev.length - 1].type === 'gpt') {
+                                let newMessages = [...prev];
+                                newMessages[newMessages.length - 1] = {
+                                    ...newMessages[newMessages.length - 1],
+                                    text: newMessages[newMessages.length - 1].text + gptResponse,
+                                    original: contentOrigin,
+                                    metadata: metadata
+                                };
+                                return newMessages;
+                            } else {
+                                return [...prev, { type: 'gpt', text: gptResponse, metadata: metadata }];
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error parsing event data:", error);
+                }
+            };
+
+            eventSource.onerror = function (error) {
+                // console.error("EventSource failed:", error);
+                eventSource.close();
+            };
+        }
+    };
+
+    const openOriginalContentInModal = (content: string, metadata: any) => {
+        let modalContent = content;
+        let metaData = JSON.stringify(metadata, null, 2);
+        metaData = metaData.replace('/\n/g', '<br />')
+        setModalContent(modalContent + '\n\n' + metaData);
         setIsModalOpen(true);
     }
 
@@ -121,8 +156,6 @@ const Chat = () => {
             clearTimeout(timeoutId);
         };
     }, [currentIndex, content[content.length - 1].text]);
-
-
 
     // @ts-ignore
     return (
@@ -181,8 +214,7 @@ const Chat = () => {
                                                             {bubble.type === 'gpt' && bubble.original !== 'DB' && bubble.original && !bubble.fromGrid && !isHidden &&
                                                                 <Button onClick={() => {
                                                                     if (bubble.original) {
-                                                                        openOriginalContentInModal(bubble.original);
-
+                                                                        openOriginalContentInModal(bubble.original, bubble.metadata);
                                                                         setIsHidden(true);
                                                                     }
                                                                     console.log(isHidden)
