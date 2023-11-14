@@ -3,7 +3,7 @@ export const getGPTResponse = async (body:{
     messages:[{role:string,content:string}]
 }) => {
     //http://ec2-13-209-97-116.ap-northeast-2.compute.amazonaws.com:8080/langchain
-    const result = await fetch('http://ec2-13-209-97-116.ap-northeast-2.compute.amazonaws.com:8080/langchain', {
+    const result = await fetch('http://ec2-13-209-97-116.ap-northeast-2.compute.amazonaws.com:8080/saved', {
         method: 'POST', // HTTP 요청 메서드 설정
         headers: {
             'Content-Type': 'application/json' // 요청 바디의 데이터 타입 설정
@@ -15,6 +15,8 @@ export const getGPTResponse = async (body:{
         }
         return res.json()
     })
-
     return JSON.stringify(result);
 }
+
+
+
