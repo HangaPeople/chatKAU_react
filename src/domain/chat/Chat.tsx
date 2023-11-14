@@ -4,16 +4,26 @@ import {
     BodyWrapper,
     BubbleBox,
     BubbleRow,
-    ChatIcon,
-    MenuIcon,
-    SettingButton, SettingsButtonsWrapper, SettingsContainer, CloseButton,
     ChatContainer,
+    ChatIcon,
     ChatInput,
     ChatInputContainer,
     ChatInputWrapper,
-    ChatWrapper, HeaderContainer, HeaderWrapper,
-    NameContainer, NameWrapper,
+    ChatWrapper,
+    CloseButton,
+    HeaderContainer,
+    HeaderWrapper,
+    MenuIcon,
+    NameContainer,
+    NameWrapper,
     Root,
+    SettingButton,
+    SettingsButtonsWrapper,
+    SettingsContainer,
+    StyledTable,
+    StyledTableCell,
+    StyledTableRow,
+    TableContainer,
     Wrapper
 } from "./Chat.styles";
 import {Button} from "@mui/material";
@@ -23,8 +33,6 @@ import {Bubble} from "../../component/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
 import LoginModal from "../../pages/LoginModal";
 import DetailModal from "../../pages/DetailModal";
-import ReviewButton from "../../component/ReviewButton";
-import '../../style/ReviewButton.css'
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?"}]);
@@ -38,8 +46,8 @@ const Chat = () => {
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const gridMessages = [
-        ["학식", "교내 연락처", "학사일정"],
-        ["수강지도상담", "졸업", "교양수업"],
+        ["학식", "학교 뉴스", "학사일정"],
+        ["수강지도상담", "졸업", "교내 연락처"],
         ["휴학", "복학", "등록안내"]
     ];
     const [ isLoginModalOpen, setLoginModalOpen ] = useState(false);
@@ -64,20 +72,54 @@ const Chat = () => {
     };
 
     const handleSendMessage = async () => {
-        if(inputRef.current){
-            const currentInput = inputRef.current.value ?? ''
-            inputRef.current.value = ''
-            setContent(prev => [...prev, {type:'user', text:currentInput}]);
-            const response = await getGPTResponse({messages:[{role:'system', content:currentInput}] ,type:responseType})
-            const parsedResponse = JSON.parse(response);
-            const parsed:string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>')
-            setContent(prev => [...prev, {type:'gpt', text: parsed, original: parsedResponse.choices[0].message.content_origin, metadata: parsedResponse.choices[0].message.metadata} ]);
-        }
-    }
+        if (inputRef.current) {
+            const currentInput = inputRef.current.value ?? '';
+            inputRef.current.value = '';
+            setContent(prev => [...prev, { type: 'user', text: currentInput }]);
 
-    const openOriginalContentInModal = (content: string, hyperLink: string) => {
+            const query = new URLSearchParams({ question: currentInput }).toString();
+            const url = `http://ec2-13-209-97-116.ap-northeast-2.compute.amazonaws.com:8080/langchain?${query}`;
+
+            const eventSource = new EventSource(url);
+
+            eventSource.onmessage = function (event) {
+                try {
+                    const parsedData = JSON.parse(event.data);
+
+                    if (parsedData.choices) {
+                        const gptResponse = parsedData.choices[0].message.content;
+                        const contentOrigin = parsedData.choices[0].message.content_origin;
+                        const metadata = parsedData.choices[0].message.metadata.source;
+
+                        setContent(prev => {
+                            if (prev.length > 0 && prev[prev.length - 1].type === 'gpt') {
+                                let newMessages = [...prev];
+                                newMessages[newMessages.length - 1] = {
+                                    ...newMessages[newMessages.length - 1],
+                                    text: newMessages[newMessages.length - 1].text + gptResponse,
+                                    original: contentOrigin,
+                                    metadata: metadata
+                                };
+                                return newMessages;
+                            } else {
+                                return [...prev, { type: 'gpt', text: gptResponse, metadata: metadata }];
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error parsing event data:", error);
+                }
+            };
+
+            eventSource.onerror = function (error) {
+                eventSource.close();
+            };
+        }
+    };
+
+    const openOriginalContentInModal = (content: string, metadata: any) => {
         setModalContent(content);
-        setModalHyperLink(hyperLink);
+        setModalHyperLink(metadata);
         setIsModalOpen(true);
     }
 
@@ -162,55 +204,35 @@ const Chat = () => {
                                                         )}
                                                         <div className='BubbleContainer'>
                                                             <div dangerouslySetInnerHTML={{__html: bubble.type === 'gpt' && bubble.original !== 'DB' ? bubble.text.substring(0, currentIndex) : bubble.text}} className='BubbleWrapper'></div>
+                                                            <div>
+                                                                {bubble.content}
+                                                            </div>
                                                             {bubble.type === 'gpt' && bubble.original !== 'DB' && bubble.original && !bubble.fromGrid && !isHidden &&
-                                                                <>
-                                                                    <div className='button-set'>
-                                                                        <Button className='detail-button' onClick={() => {
-                                                                            if (bubble.original) {
-                                                                                openOriginalContentInModal(bubble.original, bubble.metadata ? bubble.metadata.source : '');
-
-                                                                                setIsHidden(true);
-                                                                            }
-                                                                        }}>
-                                                                            자세히 보기
-                                                                        </Button>
-                                                                        <ReviewButton answer={bubble.text} question={"test"}/>
-                                                                    </div>
-                                                                </>
+                                                                <Button onClick={() => {
+                                                                    if (bubble.original) {
+                                                                        openOriginalContentInModal(bubble.original, bubble.metadata);
+                                                                        setIsHidden(true);
+                                                                    }
+                                                                }} >
+                                                                    자세히 보기
+                                                                </Button>
                                                             }
                                                         </div>
                                                     </BubbleRow>
                                                     {index === 0 && (
-                                                        <div style={{marginTop: '20px', display: 'flex', justifyContent: 'center'}}>
-                                                            <table style={{borderCollapse: 'separate'}}>
+                                                        <TableContainer>
+                                                            <StyledTable>
                                                                 {gridMessages.map((row, i) => (
-                                                                    <tr key={i}>
+                                                                    <StyledTableRow key={i}>
                                                                         {row.map((cell, j) => (
-                                                                            <td
-                                                                                key={j}
-                                                                                onClick={() => handleGridClick(i, j)}
-                                                                                style={{
-                                                                                    border: '1px solid #007BFF',
-                                                                                    padding: '10px 15px',
-                                                                                    cursor: 'pointer',
-                                                                                    transition: 'background-color 0.3s',
-                                                                                    backgroundColor: '#E5F3FF',
-                                                                                    color: '#004080',
-                                                                                    textAlign: 'center',
-                                                                                    lineHeight: '30px',
-                                                                                    width: '200px',
-                                                                                    borderRadius: '16px'
-                                                                                }}
-                                                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#CCE4FF'}
-                                                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#E5F3FF'}
-                                                                            >
+                                                                            <StyledTableCell key={j} onClick={() => handleGridClick(i, j)}>
                                                                                 {cell}
-                                                                            </td>
+                                                                            </StyledTableCell>
                                                                         ))}
-                                                                    </tr>
+                                                                    </StyledTableRow>
                                                                 ))}
-                                                            </table>
-                                                        </div>
+                                                            </StyledTable>
+                                                        </TableContainer>
                                                     )}
                                                 </React.Fragment>
                                             )
