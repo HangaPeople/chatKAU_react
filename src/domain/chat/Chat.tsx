@@ -70,7 +70,7 @@ const Chat = () => {
             setContent(prev => [...prev, { type: 'user', text: currentInput }]);
 
             const query = new URLSearchParams({ question: currentInput }).toString();
-            const url = `http://localhost:8000/langchain?${query}`;
+            const url = `http://ec2-13-209-97-116.ap-northeast-2.compute.amazonaws.com:8080/langchain?${query}`;
 
             const eventSource = new EventSource(url);
 
