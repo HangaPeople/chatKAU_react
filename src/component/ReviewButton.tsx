@@ -8,6 +8,7 @@ const ReviewButton = (questionAnswerPair: QuestionAnswerPair) => {
             "answer": questionAnswerPair.answer,
             "review": true
         };
+        console.log(dto.answer);
         // 질문 어떻게 들고 올 건지 고민 필요
         // 만든 dto 서버로 보내야 함
     }
@@ -18,6 +19,7 @@ const ReviewButton = (questionAnswerPair: QuestionAnswerPair) => {
             "answer": questionAnswerPair.answer,
             "review": false
         };
+        console.log(dto.answer);
         // 질문 어떻게 들고 올 건지 고민 필요
         // 만든 dto 서버로 보내야 함
     }
@@ -25,8 +27,9 @@ const ReviewButton = (questionAnswerPair: QuestionAnswerPair) => {
     return (
         <>
             <div className='review-button'>
-                <button onClick={goodButtonClicked}>좋아요</button>
-                <button onClick={badButtonClicked}>싫어요</button>
+                <div className='statement'>답변이 도움이 되었나요?</div>
+                <button className='button-style' onClick={goodButtonClicked}>좋아요</button>
+                <button className='button-style' onClick={badButtonClicked}>싫어요</button>
             </div>
         </>
     );

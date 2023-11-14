@@ -1,9 +1,12 @@
 import {useEffect} from "react";
 import "../style/DetailModal.css"
 import {DetailModalProps} from "../component/Chat";
+import React from "react";
 
 const DetailModal = (detailModalProps: DetailModalProps) => {
     const {isOpen, close, content, hyperLink} = detailModalProps;
+
+    const lines = content.split("\n");
 
     useEffect(() => {
         if(isOpen) {
@@ -27,7 +30,14 @@ const DetailModal = (detailModalProps: DetailModalProps) => {
                                 <button className='close' onClick={close}>&times;</button>
                             </div>
                             <div className='detail-modal-body'>
-                                {content}
+                                {
+                                    lines.map((line, index) => (
+                                        <React.Fragment key={index}>
+                                            {line}
+                                            {index !== lines.length - 1 && <br />}
+                                        </React.Fragment>
+                                    ))
+                                }
                             </div>
                             <div className='detail-modal-tail'>
                                 자세한 내용은&nbsp;
