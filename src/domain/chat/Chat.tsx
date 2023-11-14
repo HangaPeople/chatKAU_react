@@ -34,6 +34,7 @@ import {getGPTResponse} from "../../api/ResponseApi";
 import LoginModal from "../../pages/LoginModal";
 import DetailModal from "../../pages/DetailModal";
 import ReviewButton from "../../component/ReviewButton";
+import '../../style/ReviewButton.css'
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "original": "init"}]);
@@ -204,14 +205,17 @@ const Chat = () => {
                                                         <div className='BubbleContainer'>
                                                             <div dangerouslySetInnerHTML={{__html: bubble.original === 'init' ? bubble.text.substring(0, currentIndex) : bubble.text}} className='BubbleWrapper'></div>
                                                             {bubble.type === 'gpt' && bubble.original !== 'DB' && bubble.original !== 'init' && bubble.original && !bubble.fromGrid && !isHidden &&
-                                                                <><Button onClick={() => {
+                                                                <><div className='button-set'>
+                                                                    <Button className='detail-button' onClick={() => {
                                                                     if (bubble.original) {
                                                                         openOriginalContentInModal(bubble.original, bubble.metadata);
                                                                         setIsHidden(true);
                                                                     }
-                                                                }}>
-                                                                    자세히 보기
-                                                                </Button><ReviewButton question={content[index - 1].text} answer={bubble.text}/></>
+                                                                    }}>
+                                                                        자세히 보기
+                                                                    </Button>
+                                                                    <ReviewButton question={content[index - 1].text} answer={bubble.text}/>
+                                                            </div></>
                                                             }
                                                         </div>
                                                     </BubbleRow>

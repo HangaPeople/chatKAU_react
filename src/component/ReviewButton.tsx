@@ -29,8 +29,8 @@ const ReviewButton = (questionAnswerPair: QuestionAnswerPair) => {
         <>
             <div className='review-button'>
                 <div className='statement'>답변이 도움이 되었나요?</div>
-                <button className='button-style' onClick={goodButtonClicked}>좋아요</button>
-                <button className='button-style' onClick={badButtonClicked}>싫어요</button>
+                <button className='button-good-style' onClick={goodButtonClicked}></button>
+                <button className='button-bad-style' onClick={badButtonClicked}></button>
             </div>
         </>
     );
