@@ -36,7 +36,7 @@ import DetailModal from "../../pages/DetailModal";
 import ReviewButton from "../../component/ReviewButton";
 
 const Chat = () => {
-    const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?"}]);
+    const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "original": "init"}]);
     const inputRef = useRef<HTMLInputElement>(null);
     const [isEntered, setIsEntered] = useState(false);
     const [responseType, setResponseType] = useState('simple');
@@ -103,7 +103,7 @@ const Chat = () => {
                                 };
                                 return newMessages;
                             } else {
-                                return [...prev, { type: 'gpt', text: gptResponse, metadata: metadata }];
+                                return [...prev, { "type": 'gpt', "text": gptResponse, "metadata": metadata }];
                             }
                         });
                     }
@@ -147,21 +147,19 @@ const Chat = () => {
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
-            if(currentIndex < content[content.length - 1].text.length) {
-                setButtonDisable(true);
+            if(currentIndex < content[0].text.length) {
                 setCurrentIndex(currentIndex + 1);
             }
 
-            if(currentIndex === content[content.length - 1].text.length) {
+            if(currentIndex === content[0].text.length) {
                 clearTimeout(timeoutId);
-                setButtonDisable(false);
             }
         }, 10);
 
         return () => {
             clearTimeout(timeoutId);
         };
-    }, [currentIndex, content[content.length - 1].text]);
+    }, [currentIndex, content[0].text]);
 
     // @ts-ignore
     return (
@@ -204,8 +202,8 @@ const Chat = () => {
                                                             <ChatIcon src="항공대캐릭터.png" alt="User Icon" />
                                                         )}
                                                         <div className='BubbleContainer'>
-                                                            <div dangerouslySetInnerHTML={{__html: bubble.type === 'gpt' && bubble.original !== 'DB' ? bubble.text.substring(0, currentIndex) : bubble.text}} className='BubbleWrapper'></div>
-                                                            {bubble.type === 'gpt' && bubble.original !== 'DB' && bubble.original && !bubble.fromGrid && !isHidden &&
+                                                            <div dangerouslySetInnerHTML={{__html: bubble.original === 'init' ? bubble.text.substring(0, currentIndex) : bubble.text}} className='BubbleWrapper'></div>
+                                                            {bubble.type === 'gpt' && bubble.original !== 'DB' && bubble.original !== 'init' && bubble.original && !bubble.fromGrid && !isHidden &&
                                                                 <><Button onClick={() => {
                                                                     if (bubble.original) {
                                                                         openOriginalContentInModal(bubble.original, bubble.metadata);
@@ -213,7 +211,7 @@ const Chat = () => {
                                                                     }
                                                                 }}>
                                                                     자세히 보기
-                                                                </Button><ReviewButton question={"test"} answer={bubble.text}/></>
+                                                                </Button><ReviewButton question={content[index - 1].text} answer={bubble.text}/></>
                                                             }
                                                         </div>
                                                     </BubbleRow>

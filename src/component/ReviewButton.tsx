@@ -1,5 +1,6 @@
 import '../style/ReviewButton.css'
-import {QuestionAnswerPair, ReviewAnswerDto} from "../domain/review-button/ReviewAnswer";
+import {QuestionAnswerPair, ReviewAnswerDto} from "./ReviewAnswer";
+import {registerSavedAnswer} from "../api/SaveAnswerApi";
 
 const ReviewButton = (questionAnswerPair: QuestionAnswerPair) => {
     const goodButtonClicked = () => {
@@ -8,9 +9,9 @@ const ReviewButton = (questionAnswerPair: QuestionAnswerPair) => {
             "answer": questionAnswerPair.answer,
             "review": true
         };
-        console.log(dto.answer);
-        // 질문 어떻게 들고 올 건지 고민 필요
-        // 만든 dto 서버로 보내야 함
+
+        const resp = registerSavedAnswer(dto).catch((e) => console.log(e)).then();
+        console.log(resp);
     }
 
     const badButtonClicked = () => {
@@ -19,9 +20,9 @@ const ReviewButton = (questionAnswerPair: QuestionAnswerPair) => {
             "answer": questionAnswerPair.answer,
             "review": false
         };
-        console.log(dto.answer);
-        // 질문 어떻게 들고 올 건지 고민 필요
-        // 만든 dto 서버로 보내야 함
+
+        const resp = registerSavedAnswer(dto).catch((e) => console.log(e)).then();
+        console.log(resp);
     }
 
     return (
