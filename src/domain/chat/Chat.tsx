@@ -4,31 +4,38 @@ import {
     BodyWrapper,
     BubbleBox,
     BubbleRow,
-    ChatIcon,
-    MenuIcon,
-    SettingButton, SettingsButtonsWrapper, SettingsContainer, CloseButton,
     ChatContainer,
+    ChatIcon,
     ChatInput,
     ChatInputContainer,
     ChatInputWrapper,
-    ChatWrapper, HeaderContainer, HeaderWrapper,
-    NameContainer, NameWrapper,
-    ModalContainer, ModalContent,
-    TableContainer, StyledTable, StyledTableRow, StyledTableCell,
+    ChatWrapper,
+    CloseButton,
+    HeaderContainer,
+    HeaderWrapper,
+    MenuIcon,
+    NameContainer,
+    NameWrapper,
     Root,
-    LoadingIndicator,
-    Wrapper, CancelGenerateResponse, CancelButtonWrapper,
+    SettingButton,
+    SettingsButtonsWrapper,
+    SettingsContainer,
+    StyledTable,
+    StyledTableCell,
+    StyledTableRow,
+    TableContainer,
+    Wrapper
 } from "./Chat.styles";
 import {Button} from "@mui/material";
 
 import logo from './emblem.png'
-import {Bubble} from "../../atom/Chat";
+import {Bubble} from "../../component/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
-import SlideMenu from "../../atom/InitialSlideMenu";
 import LoginModal from "../../pages/LoginModal";
+import DetailModal from "../../pages/DetailModal";
 
 const Chat = () => {
-    const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "content": SlideMenu()}]);
+    const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?"}]);
     const inputRef = useRef<HTMLInputElement>(null);
     const [isEntered, setIsEntered] = useState(false);
     const [responseType, setResponseType] = useState('simple');
@@ -45,6 +52,7 @@ const Chat = () => {
     ];
     const [ isLoginModalOpen, setLoginModalOpen ] = useState(false);
     const [ isHidden, setIsHidden ] = useState(false);
+    const [ modalHyperLink, setModalHyperLink ] = useState('');
 
     const handleGridClick = async (i: number, j: number) => {
         const messageToSend = gridMessages[i][j];
@@ -60,7 +68,7 @@ const Chat = () => {
     };
 
     const closeLoginModal = () => {
-        setLoginModalOpen(false)
+        setLoginModalOpen(false);
     };
 
     const handleSendMessage = async () => {
@@ -104,17 +112,14 @@ const Chat = () => {
             };
 
             eventSource.onerror = function (error) {
-                // console.error("EventSource failed:", error);
                 eventSource.close();
             };
         }
     };
 
     const openOriginalContentInModal = (content: string, metadata: any) => {
-        let modalContent = content;
-        let metaData = JSON.stringify(metadata, null, 2);
-        metaData = metaData.replace('/\n/g', '<br />')
-        setModalContent(modalContent + '\n\n' + metaData);
+        setModalContent(content);
+        setModalHyperLink(metadata);
         setIsModalOpen(true);
     }
 
@@ -160,14 +165,7 @@ const Chat = () => {
     // @ts-ignore
     return (
         <>
-            {isModalOpen && (
-                <ModalContainer>
-                    <ModalContent>
-                        <button onClick={closeModal} style={{ float: 'right' }}>&times;</button>
-                        <div>{modalContent}</div>
-                    </ModalContent>
-                </ModalContainer>
-            )}
+            <DetailModal isOpen={isModalOpen} close={closeModal} content={modalContent} hyperLink={modalHyperLink} />
             <Root>
                 <Wrapper>
                     <HeaderContainer>
@@ -178,8 +176,6 @@ const Chat = () => {
                                     KAU-GPT
                                 </NameWrapper>
                             </NameContainer>
-                            {/*<button onClick={ openLoginModal }>로그인</button>*/}
-                            {/*<LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} />*/}
                             <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
                         </HeaderWrapper>
                     </HeaderContainer>
@@ -217,7 +213,6 @@ const Chat = () => {
                                                                         openOriginalContentInModal(bubble.original, bubble.metadata);
                                                                         setIsHidden(true);
                                                                     }
-                                                                    console.log(isHidden)
                                                                 }} >
                                                                     자세히 보기
                                                                 </Button>
@@ -245,9 +240,6 @@ const Chat = () => {
                                         <div ref={bottomRef}></div>
                                     </BubbleBox>
                                 </ChatWrapper>
-                                <CancelButtonWrapper>
-                                    <CancelGenerateResponse>Stop Generating</CancelGenerateResponse>
-                                </CancelButtonWrapper>
                                 <ChatInputContainer>
                                     <ChatInputWrapper onKeyDown={handleEnterText}>
                                         <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
