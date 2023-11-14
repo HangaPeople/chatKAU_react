@@ -33,6 +33,7 @@ import {Bubble} from "../../component/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
 import LoginModal from "../../pages/LoginModal";
 import DetailModal from "../../pages/DetailModal";
+import ReviewButton from "../../component/ReviewButton";
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?"}]);
@@ -126,7 +127,7 @@ const Chat = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         setModalContent('');
-        setIsHidden(false)
+        setIsHidden(false);
     }
 
     const handleEnterText:KeyboardEventHandler<HTMLFormElement> = async (e) => {
@@ -152,8 +153,8 @@ const Chat = () => {
             }
 
             if(currentIndex === content[content.length - 1].text.length) {
-                setButtonDisable(false);
                 clearTimeout(timeoutId);
+                setButtonDisable(false);
             }
         }, 10);
 
@@ -204,18 +205,15 @@ const Chat = () => {
                                                         )}
                                                         <div className='BubbleContainer'>
                                                             <div dangerouslySetInnerHTML={{__html: bubble.type === 'gpt' && bubble.original !== 'DB' ? bubble.text.substring(0, currentIndex) : bubble.text}} className='BubbleWrapper'></div>
-                                                            <div>
-                                                                {bubble.content}
-                                                            </div>
                                                             {bubble.type === 'gpt' && bubble.original !== 'DB' && bubble.original && !bubble.fromGrid && !isHidden &&
-                                                                <Button onClick={() => {
+                                                                <><Button onClick={() => {
                                                                     if (bubble.original) {
                                                                         openOriginalContentInModal(bubble.original, bubble.metadata);
                                                                         setIsHidden(true);
                                                                     }
-                                                                }} >
+                                                                }}>
                                                                     자세히 보기
-                                                                </Button>
+                                                                </Button><ReviewButton question={"test"} answer={bubble.text}/></>
                                                             }
                                                         </div>
                                                     </BubbleRow>
