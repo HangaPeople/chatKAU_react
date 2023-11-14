@@ -1,4 +1,4 @@
-import {SavedAnswer} from "../atom/SavedAnswer";
+import {SavedAnswer} from "../component/SavedAnswer";
 import axios, {AxiosResponse} from "axios";
 
 const path = "http://ec2-13-209-97-116.ap-northeast-2.compute.amazonaws.com:8080/response/isGood"

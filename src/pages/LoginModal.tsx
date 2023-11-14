@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {Student, StudentInfoRequest} from "../atom/Student";
+import {Student, StudentInfoRequest} from "../component/Student";
 import {getLoginInfo} from "../api/LoginApi";
 import "../style/LoginModal.css"
 

@@ -1,5 +1,5 @@
 import axios, {AxiosResponse} from "axios";
-import {StudentInfoRequest} from "../atom/Student";
+import {StudentInfoRequest} from "../component/Student";
 
 const path = "http://ec2-13-209-97-116.ap-northeast-2.compute.amazonaws.com:8080/user/login";
 

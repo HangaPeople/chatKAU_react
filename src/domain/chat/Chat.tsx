@@ -19,10 +19,12 @@ import {
 import {Button} from "@mui/material";
 
 import logo from './emblem.png'
-import {Bubble} from "../../atom/Chat";
+import {Bubble} from "../../component/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
 import LoginModal from "../../pages/LoginModal";
 import DetailModal from "../../pages/DetailModal";
+import ReviewButton from "../../component/ReviewButton";
+import '../../style/ReviewButton.css'
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?"}]);
@@ -43,9 +45,6 @@ const Chat = () => {
     const [ isLoginModalOpen, setLoginModalOpen ] = useState(false);
     const [ isHidden, setIsHidden ] = useState(false);
     const [ modalHyperLink, setModalHyperLink ] = useState('');
-    // const [ isStopButtonHidden, setIsStopButtonHidden ] = useState(false);
-    //
-    // let flag = true;
 
     const handleGridClick = async (i: number, j: number) => {
         const messageToSend = gridMessages[i][j];
@@ -164,15 +163,20 @@ const Chat = () => {
                                                         <div className='BubbleContainer'>
                                                             <div dangerouslySetInnerHTML={{__html: bubble.type === 'gpt' && bubble.original !== 'DB' ? bubble.text.substring(0, currentIndex) : bubble.text}} className='BubbleWrapper'></div>
                                                             {bubble.type === 'gpt' && bubble.original !== 'DB' && bubble.original && !bubble.fromGrid && !isHidden &&
-                                                                <Button onClick={() => {
-                                                                    if (bubble.original) {
-                                                                        openOriginalContentInModal(bubble.original, bubble.metadata ? bubble.metadata.source : '');
+                                                                <>
+                                                                    <div className='button-set'>
+                                                                        <Button className='detail-button' onClick={() => {
+                                                                            if (bubble.original) {
+                                                                                openOriginalContentInModal(bubble.original, bubble.metadata ? bubble.metadata.source : '');
 
-                                                                        setIsHidden(true);
-                                                                    }
-                                                                }} >
-                                                                    자세히 보기
-                                                                </Button>
+                                                                                setIsHidden(true);
+                                                                            }
+                                                                        }}>
+                                                                            자세히 보기
+                                                                        </Button>
+                                                                        <ReviewButton answer={bubble.text} question={"test"}/>
+                                                                    </div>
+                                                                </>
                                                             }
                                                         </div>
                                                     </BubbleRow>

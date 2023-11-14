@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 import "../style/DetailModal.css"
-import {DetailModalProps} from "../atom/Chat";
+import {DetailModalProps} from "../component/Chat";
 
 const DetailModal = (detailModalProps: DetailModalProps) => {
     const {isOpen, close, content, hyperLink} = detailModalProps;
