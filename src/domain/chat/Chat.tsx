@@ -96,6 +96,16 @@ const Chat = () => {
                         setContent(prev => {
                             if (prev.length > 0 && prev[prev.length - 1].type === 'gpt') {
                                 let newMessages = [...prev];
+                                if(gptResponse.includes("\n")) {
+                                    const replaced = gptResponse.replaceAll("\n", "<br/>");
+                                    console.log(replaced);
+                                    newMessages[newMessages.length - 1] = {
+                                        ...newMessages[newMessages.length - 1],
+                                        text: newMessages[newMessages.length - 1].text + replaced,
+                                        original: contentOrigin,
+                                        metadata: metadata
+                                    };
+                                }
                                 newMessages[newMessages.length - 1] = {
                                     ...newMessages[newMessages.length - 1],
                                     text: newMessages[newMessages.length - 1].text + gptResponse,
@@ -165,7 +175,7 @@ const Chat = () => {
     // @ts-ignore
     return (
         <>
-            <DetailModal isOpen={isModalOpen} close={closeModal} content={modalContent} hyperLink={modalHyperLink} />
+
             <Root>
                 <Wrapper>
                     <HeaderContainer>
@@ -194,6 +204,7 @@ const Chat = () => {
                         <BodyWrapper>
                             <ChatContainer>
                                 <ChatWrapper>
+                                    <DetailModal isOpen={isModalOpen} close={closeModal} content={modalContent} hyperLink={modalHyperLink} />
                                     <BubbleBox>
                                         {content?.map((bubble, index) => {
                                             return (

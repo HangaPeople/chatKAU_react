@@ -348,28 +348,6 @@ export const CloseButton = styled.button`
   }
 `;
 
-export const ModalContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const ModalContent = styled.div`
-  background: rgba(255, 255, 255, 255);
-  padding: 20px;
-  max-width: 80%;
-  max-height: 60%;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  font-family: -apple-system, sans-serif;
-`;
-
 export const LoadingIndicator = styles.div`
   border: 5px solid #f3f3f3; 
   border-top: 5px solid #3498db; 
