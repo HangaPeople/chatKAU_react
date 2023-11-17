@@ -105,13 +105,15 @@ const Chat = () => {
                                         original: contentOrigin,
                                         metadata: metadata
                                     };
+                                } else {
+                                    newMessages[newMessages.length - 1] = {
+                                        ...newMessages[newMessages.length - 1],
+                                        text: newMessages[newMessages.length - 1].text + gptResponse,
+                                        original: contentOrigin,
+                                        metadata: metadata
+                                    };
                                 }
-                                newMessages[newMessages.length - 1] = {
-                                    ...newMessages[newMessages.length - 1],
-                                    text: newMessages[newMessages.length - 1].text + gptResponse,
-                                    original: contentOrigin,
-                                    metadata: metadata
-                                };
+
                                 return newMessages;
                             } else {
                                 return [...prev, { "type": 'gpt', "text": gptResponse, "metadata": metadata }];
@@ -219,6 +221,7 @@ const Chat = () => {
                                                                 <><div className='button-set'>
                                                                     <Button className='detail-button' onClick={() => {
                                                                     if (bubble.original) {
+                                                                        console.log(content);
                                                                         openOriginalContentInModal(bubble.original, bubble.metadata);
                                                                         setIsHidden(true);
                                                                     }
