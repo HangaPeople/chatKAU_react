@@ -19,6 +19,7 @@ type SettingsContainerProps = {
 export const Root = styled.div`
   width: 100%;
   height: 100%;
+  // overflow: hidden;
 `
 
 export const Wrapper = styled.div`
@@ -93,6 +94,7 @@ export const BodyWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  // overflow-y: scroll;
 `
 
 export const ChatContainer = styled.div`

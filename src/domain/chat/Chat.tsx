@@ -177,7 +177,6 @@ const Chat = () => {
     // @ts-ignore
     return (
         <>
-
             <Root>
                 <Wrapper>
                     <HeaderContainer>
@@ -194,7 +193,6 @@ const Chat = () => {
 
                     <SettingsContainer isOpen={isSettingsOpen}>
                         <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>
-
                         <SettingsButtonsWrapper>
                             <SettingButton onClick={ openLoginModal }>로그인</SettingButton>
                             <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} />
