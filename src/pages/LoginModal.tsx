@@ -10,7 +10,6 @@ class LoginModal extends Component<any, any> {
     };
 
     loginHandler = (e: { target: { name: string; value: string; }; }) => {
-        console.log("hello");
         const { name, value } = e.target;
         this.setState({ [name]: value });
     };
@@ -21,9 +20,11 @@ class LoginModal extends Component<any, any> {
             "studentNumber": studentNumber,
             "password": password
         } as StudentInfoRequest).then(res => {
-            if(res !== null) {
-                localStorage.setItem("isLogin", "true");
-                localStorage.setItem("student", JSON.stringify(res));
+            if(res !== undefined) {
+                sessionStorage.setItem("student", JSON.stringify(res));
+
+                this.props.handleLogin(true);
+                this.props.close();
             }
         })
     }
