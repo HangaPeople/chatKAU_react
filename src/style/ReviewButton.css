@@ -1,7 +1,7 @@
 .button-set {
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 30em;
     justify-content: flex-start;
 }
 
