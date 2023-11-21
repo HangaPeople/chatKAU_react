@@ -36,6 +36,7 @@ import DetailModal from "../../pages/DetailModal";
 import ReviewButton from "../../component/ReviewButton";
 import '../../style/ReviewButton.css'
 import UserStatus from "../../component/UserStatus";
+import UserStatusParal from "../../component/UserStatusParal";
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "original": "init"}]);
@@ -193,6 +194,7 @@ const Chat = () => {
                                     KAU-GPT
                                 </NameWrapper>
                             </NameContainer>
+                            <UserStatusParal isLogin={isLogin} />
                             <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
                         </HeaderWrapper>
                     </HeaderContainer>
