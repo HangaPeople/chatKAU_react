@@ -1,0 +1,4 @@
+.user-status-container {
+    display: flex;
+    flex-direction: column;
+}

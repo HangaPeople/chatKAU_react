@@ -35,6 +35,8 @@ import LoginModal from "../../pages/LoginModal";
 import DetailModal from "../../pages/DetailModal";
 import ReviewButton from "../../component/ReviewButton";
 import '../../style/ReviewButton.css'
+import UserStatus from "../../component/UserStatus";
+import UserStatusParal from "../../component/UserStatusParal";
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "original": "init"}]);
@@ -55,6 +57,7 @@ const Chat = () => {
     const [ isLoginModalOpen, setLoginModalOpen ] = useState(false);
     const [ isHidden, setIsHidden ] = useState(false);
     const [ modalHyperLink, setModalHyperLink ] = useState('');
+    const [ isLogin, setIsLogin ] = useState(false);
 
     const handleGridClick = async (i: number, j: number) => {
         const messageToSend = gridMessages[i][j];
@@ -151,6 +154,10 @@ const Chat = () => {
         }
     }
 
+    const handleLoginState = (state: boolean) => {
+        setIsLogin(state);
+    };
+
     useEffect(()=>{
         setIsEntered(false);
         if (bottomRef.current) {
@@ -187,6 +194,7 @@ const Chat = () => {
                                     KAU-GPT
                                 </NameWrapper>
                             </NameContainer>
+                            <UserStatusParal isLogin={isLogin} />
                             <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
                         </HeaderWrapper>
                     </HeaderContainer>
@@ -194,8 +202,15 @@ const Chat = () => {
                     <SettingsContainer isOpen={isSettingsOpen}>
                         <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>
                         <SettingsButtonsWrapper>
-                            <SettingButton onClick={ openLoginModal }>로그인</SettingButton>
-                            <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} />
+                            {
+                                !isLogin &&
+                                <SettingButton onClick={ openLoginModal }>로그인</SettingButton>
+                            }
+                            {
+                                isLogin &&
+                                <UserStatus isLogin={isLogin} />
+                            }
+                            <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} handleLogin={handleLoginState} />
                             <SettingButton onClick={() => console.log('종합 정보 시스템')}>종합 정보 시스템</SettingButton>
                             <SettingButton onClick={() => console.log('홈페이지')}>홈페이지</SettingButton>
                         </SettingsButtonsWrapper>
