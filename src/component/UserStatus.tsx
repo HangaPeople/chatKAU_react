@@ -1,26 +1,40 @@
-import {Component} from "react";
+import {useState} from "react";
 import {Student} from "./Student";
+import "../style/UserStatus.css"
+import UserStatusDetail from "./UserStatusDetail";
+import Dropdown from "./Dropdown";
 
-class UserStatus extends Component<any, any> {
-    render() {
-        const isLogin = this.props;
+const UserStatus = (props: { isLogin: boolean; }) => {
+    const [view, setView] = useState(false);
 
-        const fromStorage: string = sessionStorage.getItem("student")!;
-        const userInfo: Student = JSON.parse(fromStorage);
+    const fromStorage: string = sessionStorage.getItem("student")!;
+    const userInfo: Student = JSON.parse(fromStorage);
 
-        return (
-            <>
-                {
-                    isLogin ? (
-                        <div>
-                            <div>{userInfo.name}</div>
-                            <div>{userInfo.major}</div>
-                        </div>
-                    ) : null
-                }
-            </>
-        );
+    const handleUserDetailButtonClicked = () => {
+        setView(!view);
     }
+
+    return (
+        <>
+            {
+                props.isLogin && (
+                    <>
+                        <button onClick={handleUserDetailButtonClicked}>
+                            {view ? 'Close' : 'Open'}
+                        </button>
+                        <Dropdown visibility={view}>
+                            <ul>
+                                <li>item 1</li>
+                                <li>item 1</li>
+                                <li>item 1</li>
+                                <li>item 1</li>
+                            </ul>
+                        </Dropdown>
+                    </>
+                )
+            }
+        </>
+    );
 }
 
 export default UserStatus

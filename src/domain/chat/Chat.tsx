@@ -36,7 +36,6 @@ import DetailModal from "../../pages/DetailModal";
 import ReviewButton from "../../component/ReviewButton";
 import '../../style/ReviewButton.css'
 import UserStatus from "../../component/UserStatus";
-import UserStatusParal from "../../component/UserStatusParal";
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "original": "init"}]);
@@ -69,6 +68,7 @@ const Chat = () => {
     };
 
     const openLoginModal = () => {
+        setIsSettingsOpen(false);
         setLoginModalOpen(true);
     };
 
@@ -194,23 +194,20 @@ const Chat = () => {
                                     KAU-GPT
                                 </NameWrapper>
                             </NameContainer>
-                            <UserStatusParal isLogin={isLogin} />
-                            <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
+                            {
+                                !isLogin && <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
+                            }
                         </HeaderWrapper>
+                        <>
+                            {
+                                isLogin && <UserStatus isLogin={isLogin} />
+                            }
+                        </>
                     </HeaderContainer>
-
                     <SettingsContainer isOpen={isSettingsOpen}>
                         <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>
                         <SettingsButtonsWrapper>
-                            {
-                                !isLogin &&
-                                <SettingButton onClick={ openLoginModal }>로그인</SettingButton>
-                            }
-                            {
-                                isLogin &&
-                                <UserStatus isLogin={isLogin} />
-                            }
-                            <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} handleLogin={handleLoginState} />
+                            <SettingButton onClick={ openLoginModal }>로그인</SettingButton>
                             <SettingButton onClick={() => console.log('종합 정보 시스템')}>종합 정보 시스템</SettingButton>
                             <SettingButton onClick={() => console.log('홈페이지')}>홈페이지</SettingButton>
                         </SettingsButtonsWrapper>
@@ -219,6 +216,7 @@ const Chat = () => {
                         <BodyWrapper>
                             <ChatContainer>
                                 <ChatWrapper>
+                                    <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} handleLogin={handleLoginState} />
                                     <DetailModal isOpen={isModalOpen} close={closeModal} content={modalContent} hyperLink={modalHyperLink} />
                                     <BubbleBox>
                                         {content?.map((bubble, index) => {
