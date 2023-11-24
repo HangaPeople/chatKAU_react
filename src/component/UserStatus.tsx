@@ -19,7 +19,7 @@ const UserStatus = (props: { isLogin: boolean; }) => {
             {
                 props.isLogin && (
                     <>
-                        <button onClick={handleUserDetailButtonClicked}>
+                        <button onClick={handleUserDetailButtonClicked} className="user-detail-button">
                             {view ? 'Close' : 'Open'}
                         </button>
                         <Dropdown visibility={view}>

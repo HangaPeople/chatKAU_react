@@ -39,7 +39,6 @@ export const HeaderContainer = styled.div`
 `
 
 export const HeaderWrapper = styled.div`
-  display: flex;
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;

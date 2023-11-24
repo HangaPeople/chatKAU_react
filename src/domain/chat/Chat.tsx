@@ -195,14 +195,9 @@ const Chat = () => {
                                 </NameWrapper>
                             </NameContainer>
                             {
-                                !isLogin && <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
+                                isLogin ? <UserStatus isLogin={isLogin} /> : <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
                             }
                         </HeaderWrapper>
-                        <>
-                            {
-                                isLogin && <UserStatus isLogin={isLogin} />
-                            }
-                        </>
                     </HeaderContainer>
                     <SettingsContainer isOpen={isSettingsOpen}>
                         <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>
