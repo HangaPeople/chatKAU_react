@@ -40,3 +40,12 @@
     height: 100%;
     padding: 20px;
 }
+
+.logo {
+    padding: 12px;
+    justify-content: flex-start;
+}
+
+.logo-img {
+    height: 100%;
+}

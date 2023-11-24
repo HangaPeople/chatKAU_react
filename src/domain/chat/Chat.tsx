@@ -28,7 +28,6 @@ import {
 } from "./Chat.styles";
 import {Button} from "@mui/material";
 
-import logo from './emblem.png'
 import {Bubble} from "../../component/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
 import LoginModal from "../../pages/LoginModal";
@@ -190,7 +189,7 @@ const Chat = () => {
                         <HeaderWrapper>
                             <NameContainer>
                                 <NameWrapper>
-                                    <img src={logo} alt="로고"/>
+                                    <img src={`${process.env.PUBLIC_URL}/emblem.png`} alt="로고"/>
                                     KAU-GPT
                                 </NameWrapper>
                             </NameContainer>
