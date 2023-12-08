@@ -35,6 +35,7 @@ import DetailModal from "../../pages/DetailModal";
 import ReviewButton from "../../component/ReviewButton";
 import '../../style/ReviewButton.css'
 import UserStatus from "../../component/UserStatus";
+import Loader from "../../component/Loader";
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "original": "init"}]);
@@ -42,7 +43,6 @@ const Chat = () => {
     const [isEntered, setIsEntered] = useState(false);
     const [responseType, setResponseType] = useState('simple');
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [buttonDisabled, setButtonDisable] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState('');
     const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -56,6 +56,7 @@ const Chat = () => {
     const [ isHidden, setIsHidden ] = useState(false);
     const [ modalHyperLink, setModalHyperLink ] = useState('');
     const [ isLogin, setIsLogin ] = useState(false);
+    const [ loading, setLoadingState ] = useState(false);
 
     const handleGridClick = async (i: number, j: number) => {
         const messageToSend = gridMessages[i][j];
@@ -76,6 +77,7 @@ const Chat = () => {
     };
 
     const handleSendMessage = async () => {
+        setLoadingState(true);
         if (inputRef.current) {
             const currentInput = inputRef.current.value ?? '';
             inputRef.current.value = '';
@@ -118,10 +120,12 @@ const Chat = () => {
 
                                 return newMessages;
                             } else {
+
                                 return [...prev, { "type": 'gpt', "text": gptResponse, "metadata": metadata }];
                             }
                         });
                     }
+                    setLoadingState(false);
                 } catch (error) {
                     console.error("Error parsing event data:", error);
                 }
@@ -262,9 +266,13 @@ const Chat = () => {
                                 <ChatInputContainer>
                                     <ChatInputWrapper onKeyDown={handleEnterText}>
                                         <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
-                                        <Button onClick={handleSendMessage} disabled = {buttonDisabled}>
-                                            전송
-                                        </Button>
+                                        {
+                                            loading ?
+                                                <Loader /> :
+                                                <Button onClick={handleSendMessage}>
+                                                    전송
+                                                </Button>
+                                        }
                                     </ChatInputWrapper>
                                 </ChatInputContainer>
                             </ChatContainer>
