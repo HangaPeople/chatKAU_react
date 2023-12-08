@@ -9,33 +9,40 @@
 
 .loginModal {
     width: 480px;
-    height: 621px;
+    height: 400px;
     background-color: white;
     position: relative;
     box-sizing: border-box;
-    margin: 50px auto;
+    margin: 200px auto;
     padding: 20px;
 }
 
-.close {
+.login-modal-header {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.logo {
+    height: 100%;
+}
+
+.close-button {
     float: right;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
     font-size: 25px;
 }
 
 .modalContents {
     margin: 0 auto;
     width: 100%;
-    position: relative;
     padding: 0 20px 32px;
     box-sizing: border-box;
     display: flex;
     justify-content: center;
     flex-direction: column;
-}
-
-.signinIcon {
-    width: 150px;
-    margin: 0 auto;
 }
 
 .loginId {

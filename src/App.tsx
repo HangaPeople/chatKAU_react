@@ -1,13 +1,10 @@
 import React from 'react';
-import Router from "./Router";
-import {BrowserRouter} from "react-router-dom";
-import ChatPage from "./pages/ChatPages";
+import Chat from "./domain/chat/Chat";
 
 function App() {
   return (
     <div className="App">
-        <BrowserRouter><Router/></BrowserRouter>
-        <ChatPage/>
+        <Chat/>
     </div>
   );
 }

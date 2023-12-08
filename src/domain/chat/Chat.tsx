@@ -28,7 +28,6 @@ import {
 } from "./Chat.styles";
 import {Button} from "@mui/material";
 
-import logo from './emblem.png'
 import {Bubble} from "../../component/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
 import LoginModal from "../../pages/LoginModal";
@@ -36,7 +35,7 @@ import DetailModal from "../../pages/DetailModal";
 import ReviewButton from "../../component/ReviewButton";
 import '../../style/ReviewButton.css'
 import UserStatus from "../../component/UserStatus";
-import UserStatusParal from "../../component/UserStatusParal";
+import Loader from "../../component/Loader";
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "original": "init"}]);
@@ -44,7 +43,6 @@ const Chat = () => {
     const [isEntered, setIsEntered] = useState(false);
     const [responseType, setResponseType] = useState('simple');
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [buttonDisabled, setButtonDisable] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState('');
     const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -58,6 +56,7 @@ const Chat = () => {
     const [ isHidden, setIsHidden ] = useState(false);
     const [ modalHyperLink, setModalHyperLink ] = useState('');
     const [ isLogin, setIsLogin ] = useState(false);
+    const [ loading, setLoadingState ] = useState(false);
 
     const handleGridClick = async (i: number, j: number) => {
         const messageToSend = gridMessages[i][j];
@@ -69,6 +68,7 @@ const Chat = () => {
     };
 
     const openLoginModal = () => {
+        setIsSettingsOpen(false);
         setLoginModalOpen(true);
     };
 
@@ -77,6 +77,7 @@ const Chat = () => {
     };
 
     const handleSendMessage = async () => {
+        setLoadingState(true);
         if (inputRef.current) {
             const currentInput = inputRef.current.value ?? '';
             inputRef.current.value = '';
@@ -119,10 +120,12 @@ const Chat = () => {
 
                                 return newMessages;
                             } else {
+
                                 return [...prev, { "type": 'gpt', "text": gptResponse, "metadata": metadata }];
                             }
                         });
                     }
+                    setLoadingState(false);
                 } catch (error) {
                     console.error("Error parsing event data:", error);
                 }
@@ -190,27 +193,19 @@ const Chat = () => {
                         <HeaderWrapper>
                             <NameContainer>
                                 <NameWrapper>
-                                    <img src={logo} alt="로고"/>
+                                    <img src={`${process.env.PUBLIC_URL}/emblem.png`} alt="로고"/>
                                     KAU-GPT
                                 </NameWrapper>
                             </NameContainer>
-                            <UserStatusParal isLogin={isLogin} />
-                            <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
+                            {
+                                isLogin ? <UserStatus isLogin={isLogin} /> : <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
+                            }
                         </HeaderWrapper>
                     </HeaderContainer>
-
                     <SettingsContainer isOpen={isSettingsOpen}>
                         <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>
                         <SettingsButtonsWrapper>
-                            {
-                                !isLogin &&
-                                <SettingButton onClick={ openLoginModal }>로그인</SettingButton>
-                            }
-                            {
-                                isLogin &&
-                                <UserStatus isLogin={isLogin} />
-                            }
-                            <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} handleLogin={handleLoginState} />
+                            <SettingButton onClick={ openLoginModal }>로그인</SettingButton>
                             <SettingButton onClick={() => console.log('종합 정보 시스템')}>종합 정보 시스템</SettingButton>
                             <SettingButton onClick={() => console.log('홈페이지')}>홈페이지</SettingButton>
                         </SettingsButtonsWrapper>
@@ -219,6 +214,7 @@ const Chat = () => {
                         <BodyWrapper>
                             <ChatContainer>
                                 <ChatWrapper>
+                                    <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} handleLogin={handleLoginState} />
                                     <DetailModal isOpen={isModalOpen} close={closeModal} content={modalContent} hyperLink={modalHyperLink} />
                                     <BubbleBox>
                                         {content?.map((bubble, index) => {
@@ -270,9 +266,13 @@ const Chat = () => {
                                 <ChatInputContainer>
                                     <ChatInputWrapper onKeyDown={handleEnterText}>
                                         <ChatInput multiline maxRows={5} inputRef={inputRef} ></ChatInput>
-                                        <Button onClick={handleSendMessage} disabled = {buttonDisabled}>
-                                            전송
-                                        </Button>
+                                        {
+                                            loading ?
+                                                <Loader /> :
+                                                <Button onClick={handleSendMessage}>
+                                                    전송
+                                                </Button>
+                                        }
                                     </ChatInputWrapper>
                                 </ChatInputContainer>
                             </ChatContainer>

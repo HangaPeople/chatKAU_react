@@ -27,6 +27,7 @@ const DetailModal = (detailModalProps: DetailModalProps) => {
                     <div className='modal-wrapper' onClick={close}>
                         <div className='detail-modal'>
                             <div className='detail-modal-header'>
+                                <img className="logo-img" src={`${process.env.PUBLIC_URL}/wordmark.png`} alt={"로고"}/>
                                 <button className='close' onClick={close}>&times;</button>
                             </div>
                             <div className='detail-modal-body'>

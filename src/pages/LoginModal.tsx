@@ -40,7 +40,10 @@ class LoginModal extends Component<any, any> {
                         <div className="modal">
                             <div>
                                 <div className="loginModal">
-                                    <span className="close" onClick={close}>&times;</span>
+                                    <button className="close-button" onClick={close}>&times;</button>
+                                    <div className="login-modal-header">
+                                        <img className="logo" src={`${process.env.PUBLIC_URL}/wordmark.png`} alt={"로고"}/>
+                                    </div>
                                     <div className="modalContents">
                                         <input
                                             name="studentNumber"
