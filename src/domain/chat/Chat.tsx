@@ -168,6 +168,15 @@ const Chat = () => {
         };
     }, [currentIndex, content[0].text]);
 
+    const handleSettingButtonClick = (to: string) => {
+        if(to === '종합정보시스템') {
+            window.open("https://nportal.kau.ac.kr/webcrea/GB03/mdi/login.html", "_blank")
+        }
+        else if(to === '홈페이지') {
+            window.open("https://kau.ac.kr/web/index.do", "_blank")
+        }
+    }
+
     // @ts-ignore
     return (
         <>
@@ -188,8 +197,8 @@ const Chat = () => {
                         <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>
                         <SettingsButtonsWrapper>
                             <MajorSelect/>
-                            <SettingButton onClick={() => console.log('종합 정보 시스템')}>종합 정보 시스템</SettingButton>
-                            <SettingButton onClick={() => console.log('홈페이지')}>홈페이지</SettingButton>
+                            <SettingButton onClick={() => handleSettingButtonClick('종합정보시스템')}>종합 정보 시스템</SettingButton>
+                            <SettingButton onClick={() => handleSettingButtonClick('홈페이지')}>홈페이지</SettingButton>
                         </SettingsButtonsWrapper>
                     </SettingsContainer>
                     <BodyContainer>
