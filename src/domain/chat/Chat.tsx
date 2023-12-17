@@ -30,12 +30,11 @@ import {Button} from "@mui/material";
 
 import {Bubble} from "../../component/Chat";
 import {getGPTResponse} from "../../api/ResponseApi";
-import LoginModal from "../../pages/LoginModal";
 import DetailModal from "../../pages/DetailModal";
 import ReviewButton from "../../component/ReviewButton";
 import '../../style/ReviewButton.css'
-import UserStatus from "../../component/UserStatus";
 import Loader from "../../component/Loader";
+import MajorSelect from "../../component/MajorSelect";
 
 const Chat = () => {
     const [content, setContent] = useState<Bubble[]>([{"type": "gpt", "text": "안녕하세요, 무엇을 도와드릴까요?", "original": "init"}]);
@@ -52,10 +51,8 @@ const Chat = () => {
         ["수강지도상담", "졸업", "교내 연락처"],
         ["휴학", "복학", "등록안내"]
     ];
-    const [ isLoginModalOpen, setLoginModalOpen ] = useState(false);
     const [ isHidden, setIsHidden ] = useState(false);
     const [ modalHyperLink, setModalHyperLink ] = useState('');
-    const [ isLogin, setIsLogin ] = useState(false);
     const [ loading, setLoadingState ] = useState(false);
 
     const handleGridClick = async (i: number, j: number) => {
@@ -65,15 +62,6 @@ const Chat = () => {
         const parsedResponse = JSON.parse(response);
         const parsed: string = JSON.parse(response).choices[0].message.content.replaceAll(`\n`, '<br/>');
         setContent(prev => [...prev, {type: 'gpt', text: parsed, original: parsedResponse.choices[0].message.content_origin, metadata: parsedResponse.choices[0].message.metadata, fromGrid: true}]);
-    };
-
-    const openLoginModal = () => {
-        setIsSettingsOpen(false);
-        setLoginModalOpen(true);
-    };
-
-    const closeLoginModal = () => {
-        setLoginModalOpen(false);
     };
 
     const handleSendMessage = async () => {
@@ -157,10 +145,6 @@ const Chat = () => {
         }
     }
 
-    const handleLoginState = (state: boolean) => {
-        setIsLogin(state);
-    };
-
     useEffect(()=>{
         setIsEntered(false);
         if (bottomRef.current) {
@@ -184,6 +168,15 @@ const Chat = () => {
         };
     }, [currentIndex, content[0].text]);
 
+    const handleSettingButtonClick = (to: string) => {
+        if(to === '종합정보시스템') {
+            window.open("https://nportal.kau.ac.kr/webcrea/GB03/mdi/login.html", "_blank")
+        }
+        else if(to === '홈페이지') {
+            window.open("https://kau.ac.kr/web/index.do", "_blank")
+        }
+    }
+
     // @ts-ignore
     return (
         <>
@@ -197,24 +190,21 @@ const Chat = () => {
                                     KAU-GPT
                                 </NameWrapper>
                             </NameContainer>
-                            {
-                                isLogin ? <UserStatus isLogin={isLogin} /> : <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
-                            }
+                            <MenuIcon onClick={() => setIsSettingsOpen(prev => !prev)}/>
                         </HeaderWrapper>
                     </HeaderContainer>
                     <SettingsContainer isOpen={isSettingsOpen}>
                         <CloseButton onClick={() => setIsSettingsOpen(false)}>&times;</CloseButton>
                         <SettingsButtonsWrapper>
-                            <SettingButton onClick={ openLoginModal }>로그인</SettingButton>
-                            <SettingButton onClick={() => console.log('종합 정보 시스템')}>종합 정보 시스템</SettingButton>
-                            <SettingButton onClick={() => console.log('홈페이지')}>홈페이지</SettingButton>
+                            <MajorSelect/>
+                            <SettingButton onClick={() => handleSettingButtonClick('종합정보시스템')}>종합 정보 시스템</SettingButton>
+                            <SettingButton onClick={() => handleSettingButtonClick('홈페이지')}>홈페이지</SettingButton>
                         </SettingsButtonsWrapper>
                     </SettingsContainer>
                     <BodyContainer>
                         <BodyWrapper>
                             <ChatContainer>
                                 <ChatWrapper>
-                                    <LoginModal isOpen={ isLoginModalOpen } close={closeLoginModal} handleLogin={handleLoginState} />
                                     <DetailModal isOpen={isModalOpen} close={closeModal} content={modalContent} hyperLink={modalHyperLink} />
                                     <BubbleBox>
                                         {content?.map((bubble, index) => {

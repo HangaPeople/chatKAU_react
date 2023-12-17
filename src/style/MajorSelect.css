@@ -1,0 +1,19 @@
+.select-box {
+    width: 100%;
+    display: flex;
+}
+
+.major-select {
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    background: rgba(100, 100, 255, 1);
+    color: white;
+    text-align: left;
+    z-index: 3;
+}
+
+.major-select option {
+    background: rgba(225, 225, 255, 1);
+    color: #999999;
+}
